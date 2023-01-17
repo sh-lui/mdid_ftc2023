@@ -64,7 +64,7 @@ public class ManualLift extends LinearOpMode {
 
             // == Gamepad triggered actions. ==
 
-            boolean triggerRaiseArmToUpperPosition = gamepad2.left_trigger != 0;
+            boolean triggerRaiseArmToUpperPosition = gamepad2.left_bumper;
             boolean triggerRaiseArmToLowerPosition = gamepad2.right_bumper;
             boolean shouldMove = gamepad2.a;
             double power;
