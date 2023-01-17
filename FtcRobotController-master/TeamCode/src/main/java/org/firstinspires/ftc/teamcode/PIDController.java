@@ -44,7 +44,7 @@ class PIDController {
         double timeElapsed = previousRunTime - runTime;
 
         // P
-        double error = -targetPosition - currentPosition;
+        double error = targetPosition - currentPosition;
         // I
         errorSum += error * timeElapsed;
         // D

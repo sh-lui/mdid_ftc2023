@@ -20,7 +20,7 @@ public class ManualLift extends LinearOpMode {
     private double liftRaisedPosition = 450;
     private double liftMaximumPosition = 700;
 
-    private double liftPID_Kp = 0.007;
+    private double liftPID_Kp = 0.7;
     private double liftPID_Ki = 0;
     private double liftPID_Kd = 0;
 
@@ -76,18 +76,18 @@ public class ManualLift extends LinearOpMode {
                 //setArmPower(liftController.getNextRescaledVal(rightLift.getCurrentPosition(), runtime.seconds()));
 
                 if (triggerRaiseArmToUpperPosition) {
-                    liftController.reset((int) liftRaisedPosition, rightLift.getCurrentPosition(), runtime.seconds());
+                    liftController.reset((int) liftRaisedPosition, -rightLift.getCurrentPosition(), runtime.seconds());
                     temp = rightLift.getCurrentPosition();
                     continue;
                 } else if (triggerRaiseArmToLowerPosition) {
-                    liftController.reset((int) liftMinimumPosition, rightLift.getCurrentPosition(), runtime.seconds());
+                    liftController.reset((int) liftMinimumPosition, -rightLift.getCurrentPosition(), runtime.seconds());
                     temp = rightLift.getCurrentPosition();
                     continue;
                 } else{
-                    liftController.reset(temp, rightLift.getCurrentPosition(), runtime.seconds());
+                    liftController.reset(temp, -rightLift.getCurrentPosition(), runtime.seconds());
                 }
 
-                power = liftController.getNextRescaledVal(rightLift.getCurrentPosition(), runtime.seconds());
+                power = liftController.getNextRescaledVal(-rightLift.getCurrentPosition(), runtime.seconds());
                 // liftController.reset(rightLift.getCurrentPosition(), rightLift.getCurrentPosition());
                 // setArmPower(liftController.getNextVal());
 
@@ -101,7 +101,7 @@ public class ManualLift extends LinearOpMode {
             rightLift.setPower(power);
             telemetry.addData("Status", "PID val: " + power);
             telemetry.addData("temp: ", "value" + temp);
-            telemetry.addData("Status", "Current position: " + rightLift.getCurrentPosition());
+            telemetry.addData("Status", "Current position: " + (-rightLift.getCurrentPosition()));
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
         }
