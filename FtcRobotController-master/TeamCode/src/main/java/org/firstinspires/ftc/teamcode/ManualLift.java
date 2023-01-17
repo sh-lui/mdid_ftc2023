@@ -16,15 +16,15 @@ import java.util.Collections;
 @TeleOp(name="Manual lift", group="Linear Opmode")
 public class ManualLift extends LinearOpMode {
     // Hyper-params
-    private double liftMinimumPosition = 10;
-    private double liftLoweredPosition = 200;
-    private double liftRaisedPosition = 600;
-    private double liftMaximumPosition = 700;
+    private double leftInitialPosition = 0;
+    private double rightInitialPosition = 0;
+    private double liftMinimumPosition = 0;
+    private double liftMaximumPosition = 1000;
 
-    private double liftPID_Kp = 1;
+    private double liftPID_Kp = 0.05;
     private double liftPID_Ki = 0;
     private double liftPID_Kd = 0;
-    private double basePower = 0.6;
+    private double basePower = 0;
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -32,9 +32,18 @@ public class ManualLift extends LinearOpMode {
     private DcMotor rightLift = null;
 
 
-    public void setArmPower(double power) {
-        leftLift.setPower(power);
-        rightLift.setPower(power);
+    public int getPosition() {
+        double leftPosition = ((leftLift.getCurrentPosition() - leftInitialPosition));
+        double rightPosition = ((rightLift.getCurrentPosition() - rightInitialPosition));
+        return (int) (leftPosition + rightPosition) / 2;
+    }
+
+    public int getLeftPosition() {
+        return (int) ((leftLift.getCurrentPosition() - leftInitialPosition));
+    }
+
+    public int getRightPosition() {
+        return (int) ((rightLift.getCurrentPosition() - rightInitialPosition));
     }
 
     @Override
@@ -46,7 +55,8 @@ public class ManualLift extends LinearOpMode {
         leftLift.setDirection(DcMotor.Direction.REVERSE);
         rightLift.setDirection(DcMotor.Direction.FORWARD);
         // Wait for the game to start (driver presses PLAY)
-        rightLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -56,7 +66,12 @@ public class ManualLift extends LinearOpMode {
         runtime.reset();
 
         // Custom PID controller
-        PIDController liftController = new PIDController(liftPID_Kp, liftPID_Ki, liftPID_Kd);
+        PIDController leftLiftController = new PIDController(liftPID_Kp, liftPID_Ki, liftPID_Kd);
+        PIDController rightLiftController = new PIDController(liftPID_Kp, liftPID_Ki, liftPID_Kd);
+
+        // get initial position of motor
+        leftInitialPosition = leftLift.getCurrentPosition();
+        rightInitialPosition = rightLift.getCurrentPosition();
 
 
         // run until the end of the match (driver presses STOP)
@@ -69,7 +84,9 @@ public class ManualLift extends LinearOpMode {
             boolean triggerRaiseArmToUpperPosition = gamepad2.left_bumper;
             boolean triggerRaiseArmToLowerPosition = gamepad2.right_bumper;
             boolean shouldMove = gamepad2.a;
-            double power;
+
+            double leftPower;
+            double rightPower;
 
 
             if (shouldMove) {
@@ -77,33 +94,42 @@ public class ManualLift extends LinearOpMode {
                 //setArmPower(liftController.getNextRescaledVal(rightLift.getCurrentPosition(), runtime.seconds()));
 
                 if (triggerRaiseArmToUpperPosition) {
-                    liftController.reset((int) liftRaisedPosition, -rightLift.getCurrentPosition(), runtime.seconds());
+                    leftLiftController.reset((int) liftMaximumPosition, getLeftPosition(), runtime.seconds());
+                    rightLiftController.reset((int) liftMaximumPosition, getRightPosition(), runtime.seconds());
                     //temp = rightLift.getCurrentPosition();
                     continue;
                 } else if (triggerRaiseArmToLowerPosition) {
-                    liftController.reset((int) liftLoweredPosition, -rightLift.getCurrentPosition(), runtime.seconds());
+                    leftLiftController.reset((int) liftMinimumPosition, getLeftPosition(), runtime.seconds());
+                    rightLiftController.reset((int) liftMinimumPosition, getRightPosition(), runtime.seconds());
                     //temp = rightLift.getCurrentPosition();
                     continue;
                 } else{
                     //liftController.reset(temp, -rightLift.getCurrentPosition(), runtime.seconds());
                 }
 
-                power = liftController.getNextVal(-rightLift.getCurrentPosition(), runtime.seconds());
+                leftPower = leftLiftController.getNextVal(getPosition(), runtime.seconds());
+                rightPower = rightLiftController.getNextVal(getPosition(), runtime.seconds());
                 // liftController.reset(rightLift.getCurrentPosition(), rightLift.getCurrentPosition());
                 // setArmPower(liftController.getNextVal());
 
             } else {
-                power = 0;
+                leftPower = 0;
+                rightPower = 0;
             }
 
 
 
-            leftLift.setPower(Math.min(basePower + power, 1));
-            rightLift.setPower(Math.min(basePower + power, 1));
-            telemetry.addData("Status", "PID val: " + power);
-            telemetry.addData("Status", "Target position: " + liftController.targetPosition);
-            telemetry.addData("Status", "Error: " + (liftController.targetPosition - -rightLift.getCurrentPosition()) );
-            telemetry.addData("Status", "Current position: " + (-rightLift.getCurrentPosition()));
+            leftLift.setPower(Math.min(basePower + leftPower, 1));
+            rightLift.setPower(Math.min(basePower + rightPower, 1));
+            telemetry.addData("Status", "Right PID val: " + rightPower);
+            telemetry.addData("Status", "Left PID val: " + leftPower);
+            telemetry.addData("Status", "Target position: " + rightLiftController.targetPosition);
+            telemetry.addData("Status", "Left position: " + getLeftPosition());
+            telemetry.addData("Status", "Right position: " + getRightPosition());
+            telemetry.addData("Status", "A: " + leftLift.getCurrentPosition());
+            telemetry.addData("Status", "B: " + rightLift.getCurrentPosition());
+            telemetry.addData("Status", "Left initial position: " + leftInitialPosition);
+            telemetry.addData("Status", "Right initial position: " + rightInitialPosition);
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
         }

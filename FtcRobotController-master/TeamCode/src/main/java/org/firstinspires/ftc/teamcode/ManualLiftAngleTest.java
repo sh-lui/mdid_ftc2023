@@ -34,8 +34,9 @@ public class ManualLiftAngleTest extends LinearOpMode {
 
         leftLift.setDirection(DcMotor.Direction.FORWARD);
         rightLift.setDirection(DcMotor.Direction.REVERSE);
+
         // Wait for the game to start (driver presses PLAY)
-        //rightLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -61,9 +62,18 @@ public class ManualLiftAngleTest extends LinearOpMode {
             //    lowerArm();
             //}
 
-            double triggerValue = gamepad2.right_trigger;
-            leftLift.setPower(-triggerValue);
-            rightLift.setPower(-triggerValue);
+            double leftTriggerValue = gamepad2.left_trigger;
+            double rightTriggerValue = gamepad2.right_trigger;
+            double power;
+
+            if (leftTriggerValue != 0) {
+                power = leftTriggerValue;
+            } else {
+                power = -rightTriggerValue;
+            }
+
+            leftLift.setPower(-power);
+            rightLift.setPower(-power);
 
 
 
@@ -75,8 +85,10 @@ public class ManualLiftAngleTest extends LinearOpMode {
             //leftFrontDrive.setPower(leftPower);
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Trigger Power","Power: " + triggerValue);
-            telemetry.addData("Motor position", "Position: " + rightLift.getCurrentPosition());
+            telemetry.addData("Trigger Power","Power: " + power);
+            telemetry.addData("Trigger Power","lt: " + leftTriggerValue);
+            telemetry.addData("Trigger Power","rt: " + rightTriggerValue);
+            telemetry.addData("Motor position", "Position: " + leftLift.getCurrentPosition());
             telemetry.update();
         }
 
