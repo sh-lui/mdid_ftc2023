@@ -35,7 +35,7 @@ public class ManualLiftAngleTest extends LinearOpMode {
         leftLift.setDirection(DcMotor.Direction.FORWARD);
         rightLift.setDirection(DcMotor.Direction.REVERSE);
         // Wait for the game to start (driver presses PLAY)
-        rightLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //rightLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 

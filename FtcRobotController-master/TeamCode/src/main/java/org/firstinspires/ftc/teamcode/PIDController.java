@@ -14,7 +14,7 @@ class PIDController {
     private double errorSum;
     private double previousError;
     public double previousRunTime;
-    private int targetPosition = 0;
+    public int targetPosition = 0;
     private ArrayList<Double> errorHistory = new ArrayList<Double>(); // previous 10 errors
 
     // public boolean isActive = false;
@@ -39,6 +39,7 @@ class PIDController {
         previousError = (double) (_currentPosition - _targetPosition);
         previousRunTime = runTime;
     }
+
 
     public double getNextVal(double currentPosition, double runTime) {
         double timeElapsed = previousRunTime - runTime;

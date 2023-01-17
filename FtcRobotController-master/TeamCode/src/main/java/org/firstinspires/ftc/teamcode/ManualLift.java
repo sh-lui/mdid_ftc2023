@@ -17,12 +17,14 @@ import java.util.Collections;
 public class ManualLift extends LinearOpMode {
     // Hyper-params
     private double liftMinimumPosition = 10;
-    private double liftRaisedPosition = 450;
+    private double liftLoweredPosition = 200;
+    private double liftRaisedPosition = 600;
     private double liftMaximumPosition = 700;
 
-    private double liftPID_Kp = 0.7;
+    private double liftPID_Kp = 1;
     private double liftPID_Ki = 0;
     private double liftPID_Kd = 0;
+    private double basePower = 0.6;
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -70,24 +72,23 @@ public class ManualLift extends LinearOpMode {
             double power;
 
 
-
             if (shouldMove) {
 
                 //setArmPower(liftController.getNextRescaledVal(rightLift.getCurrentPosition(), runtime.seconds()));
 
                 if (triggerRaiseArmToUpperPosition) {
                     liftController.reset((int) liftRaisedPosition, -rightLift.getCurrentPosition(), runtime.seconds());
-                    temp = rightLift.getCurrentPosition();
+                    //temp = rightLift.getCurrentPosition();
                     continue;
                 } else if (triggerRaiseArmToLowerPosition) {
-                    liftController.reset((int) liftMinimumPosition, -rightLift.getCurrentPosition(), runtime.seconds());
-                    temp = rightLift.getCurrentPosition();
+                    liftController.reset((int) liftLoweredPosition, -rightLift.getCurrentPosition(), runtime.seconds());
+                    //temp = rightLift.getCurrentPosition();
                     continue;
                 } else{
-                    liftController.reset(temp, -rightLift.getCurrentPosition(), runtime.seconds());
+                    //liftController.reset(temp, -rightLift.getCurrentPosition(), runtime.seconds());
                 }
 
-                power = liftController.getNextRescaledVal(-rightLift.getCurrentPosition(), runtime.seconds());
+                power = liftController.getNextVal(-rightLift.getCurrentPosition(), runtime.seconds());
                 // liftController.reset(rightLift.getCurrentPosition(), rightLift.getCurrentPosition());
                 // setArmPower(liftController.getNextVal());
 
@@ -97,10 +98,11 @@ public class ManualLift extends LinearOpMode {
 
 
 
-            leftLift.setPower(power);
-            rightLift.setPower(power);
+            leftLift.setPower(Math.min(basePower + power, 1));
+            rightLift.setPower(Math.min(basePower + power, 1));
             telemetry.addData("Status", "PID val: " + power);
-            telemetry.addData("temp: ", "value" + temp);
+            telemetry.addData("Status", "Target position: " + liftController.targetPosition);
+            telemetry.addData("Status", "Error: " + (liftController.targetPosition - -rightLift.getCurrentPosition()) );
             telemetry.addData("Status", "Current position: " + (-rightLift.getCurrentPosition()));
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
