@@ -32,35 +32,30 @@ public class ManualLiftAngleTest extends LinearOpMode {
         leftLift  = hardwareMap.get(DcMotor.class, "left_lift");
         rightLift  = hardwareMap.get(DcMotor.class, "right_lift");
 
+        leftLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         leftLift.setDirection(DcMotor.Direction.FORWARD);
         rightLift.setDirection(DcMotor.Direction.REVERSE);
 
-        // Wait for the game to start (driver presses PLAY)
-        leftLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        leftLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             // Setup a variable for each drive wheel to save power level for telemetry
-
-            /* 
-            double leftPower; 
-            double rightPower; 
-            */
-
-            //boolean shouldRaiseArm  = gamepad2.left_bumper;
-            //boolean shouldLowerArm  = gamepad2.right_bumper;
-            //if (shouldRaiseArm) {
-            //    raiseArm();
-            //}
-
-            //if (shouldLowerArm && !shouldRaiseArm) {
-            //    lowerArm();
-            //}
 
             double leftTriggerValue = gamepad2.left_trigger;
             double rightTriggerValue = gamepad2.right_trigger;
@@ -88,7 +83,8 @@ public class ManualLiftAngleTest extends LinearOpMode {
             telemetry.addData("Trigger Power","Power: " + power);
             telemetry.addData("Trigger Power","lt: " + leftTriggerValue);
             telemetry.addData("Trigger Power","rt: " + rightTriggerValue);
-            telemetry.addData("Motor position", "Position: " + leftLift.getCurrentPosition());
+            telemetry.addData("Motor position l", "Position: " + leftLift.getCurrentPosition());
+            telemetry.addData("Motor position r", "Position: " + rightLift.getCurrentPosition());
             telemetry.update();
         }
 
