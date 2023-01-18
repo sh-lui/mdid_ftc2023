@@ -19,12 +19,12 @@ public class ManualLift extends LinearOpMode {
     private double leftInitialPosition = 0;
     private double rightInitialPosition = 0;
     private double liftMinimumPosition = 0;
-    private double liftMaximumPosition = 1000;
+    private double liftMaximumPosition = 700;
 
-    private double liftPID_Kp = 0.05;
+    private double liftPID_Kp = 0.01;
     private double liftPID_Ki = 0;
     private double liftPID_Kd = 0;
-    private double basePower = 0;
+    private double basePower = 0.1;
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -119,8 +119,8 @@ public class ManualLift extends LinearOpMode {
 
 
 
-            leftLift.setPower(Math.min(basePower + leftPower, 1));
-            rightLift.setPower(Math.min(basePower + rightPower, 1));
+            leftLift.setPower(Math.max(0, Math.min(basePower + leftPower, 1)));
+            rightLift.setPower(Math.max(0, Math.min(basePower + rightPower, 1)));
             telemetry.addData("Status", "Right PID val: " + rightPower);
             telemetry.addData("Status", "Left PID val: " + leftPower);
             telemetry.addData("Status", "Target position: " + rightLiftController.targetPosition);

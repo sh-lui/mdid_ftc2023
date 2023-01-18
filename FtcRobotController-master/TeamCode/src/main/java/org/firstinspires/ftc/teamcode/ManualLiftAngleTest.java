@@ -67,8 +67,8 @@ public class ManualLiftAngleTest extends LinearOpMode {
                 power = -rightTriggerValue;
             }
 
-            leftLift.setPower(-power);
-            rightLift.setPower(-power);
+            leftLift.setPower(power);
+            rightLift.setPower(power);
 
 
 
