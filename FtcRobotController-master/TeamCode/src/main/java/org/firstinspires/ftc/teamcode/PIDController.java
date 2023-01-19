@@ -11,6 +11,10 @@ class PIDController {
     private double Ki;
     private double Kd;
 
+    public double currentP;
+    public double currentI;
+    public double currentD;
+
     private double errorSum;
     private double previousError;
     public double previousRunTime;
@@ -42,19 +46,22 @@ class PIDController {
 
 
     public double getNextVal(double currentPosition, double runTime) {
-        double timeElapsed = previousRunTime - runTime;
+        double timeElapsed = runTime - previousRunTime;
 
         // P
         double error = targetPosition - currentPosition;
+        currentP = Kp * error;
         // I
         errorSum += error * timeElapsed;
+        currentI = Ki * errorSum;
         // D
         double errorDer = (error - previousError) / timeElapsed;
+        currentD = Kd * errorDer;
 
         previousError = error;
         previousRunTime = runTime;
 
-        double result = Kp * error + Ki * errorSum + Kd * errorDer;
+        double result = currentP + currentI + currentD;
 
         // Add to history and determining the stopping condition.
 

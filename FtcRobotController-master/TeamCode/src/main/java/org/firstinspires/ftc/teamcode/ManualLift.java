@@ -20,14 +20,20 @@ public class ManualLift extends LinearOpMode {
     private double rightInitialPosition = 0;
     private double liftMinimumPosition = 0;
     private double liftMaximumPosition = 700;
+    private double max_power = 1;
+    private double min_power = -0.1;
 
-    private double liftPID_Kp = 0.01;
+    private double liftPID_Kp = 0.0175;
     private double liftPID_Ki = 0;
-    private double liftPID_Kd = 0;
+    private double liftPID_Kd = 0.00025;
     private double basePower = 0.1;
+
+    private boolean incrementedHeight = false;
+    private boolean decrementedHeight = false;
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
+    private ModeSwitcher heightModeSwitcher = new ModeSwitcher(new double[]{0, 200, 500, 700}, 0);
     private DcMotor leftLift = null;
     private DcMotor rightLift = null;
 
@@ -60,8 +66,6 @@ public class ManualLift extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        int temp = 0;
-
         waitForStart();
         runtime.reset();
 
@@ -81,8 +85,9 @@ public class ManualLift extends LinearOpMode {
 
             // == Gamepad triggered actions. ==
 
-            boolean triggerRaiseArmToUpperPosition = gamepad2.left_bumper;
-            boolean triggerRaiseArmToLowerPosition = gamepad2.right_bumper;
+            boolean shouldIncrementHeightMode = gamepad2.dpad_up;
+            boolean shouldDecrementHeightMode = gamepad2.dpad_down;
+
             boolean shouldMove = gamepad2.a;
 
             double leftPower;
@@ -93,24 +98,38 @@ public class ManualLift extends LinearOpMode {
 
                 //setArmPower(liftController.getNextRescaledVal(rightLift.getCurrentPosition(), runtime.seconds()));
 
-                if (triggerRaiseArmToUpperPosition) {
-                    leftLiftController.reset((int) liftMaximumPosition, getLeftPosition(), runtime.seconds());
-                    rightLiftController.reset((int) liftMaximumPosition, getRightPosition(), runtime.seconds());
-                    //temp = rightLift.getCurrentPosition();
+                if (shouldIncrementHeightMode && !incrementedHeight) {
+                    heightModeSwitcher.increment();
+
+                    // to prevent executing this multiple times
+                    incrementedHeight = true;
+
+                    leftLiftController.reset((int) heightModeSwitcher.getValue(), getLeftPosition(), runtime.seconds());
+                    rightLiftController.reset((int) heightModeSwitcher.getValue(), getRightPosition(), runtime.seconds());
                     continue;
-                } else if (triggerRaiseArmToLowerPosition) {
-                    leftLiftController.reset((int) liftMinimumPosition, getLeftPosition(), runtime.seconds());
-                    rightLiftController.reset((int) liftMinimumPosition, getRightPosition(), runtime.seconds());
-                    //temp = rightLift.getCurrentPosition();
+                } else if (shouldDecrementHeightMode && !decrementedHeight) {
+                    heightModeSwitcher.decrement();
+
+                    // to prevent executing this multiple times
+                    decrementedHeight = true;
+
+                    leftLiftController.reset((int) heightModeSwitcher.getValue(), getLeftPosition(), runtime.seconds());
+                    rightLiftController.reset((int) heightModeSwitcher.getValue(), getRightPosition(), runtime.seconds());
                     continue;
-                } else{
-                    //liftController.reset(temp, -rightLift.getCurrentPosition(), runtime.seconds());
                 }
 
-                leftPower = leftLiftController.getNextVal(getPosition(), runtime.seconds());
-                rightPower = rightLiftController.getNextVal(getPosition(), runtime.seconds());
-                // liftController.reset(rightLift.getCurrentPosition(), rightLift.getCurrentPosition());
-                // setArmPower(liftController.getNextVal());
+                // reset value once released
+                if (!shouldDecrementHeightMode) {
+                    decrementedHeight = false;
+                }
+
+                if (!shouldIncrementHeightMode) {
+                    incrementedHeight = false;
+                }
+
+
+                leftPower = leftLiftController.getNextVal(getLeftPosition(), runtime.seconds());
+                rightPower = rightLiftController.getNextVal(getRightPosition(), runtime.seconds());
 
             } else {
                 leftPower = 0;
@@ -119,8 +138,8 @@ public class ManualLift extends LinearOpMode {
 
 
 
-            leftLift.setPower(Math.max(0, Math.min(basePower + leftPower, 1)));
-            rightLift.setPower(Math.max(0, Math.min(basePower + rightPower, 1)));
+            leftLift.setPower(Math.max(min_power, Math.min(basePower + leftPower, max_power)));
+            rightLift.setPower(Math.max(min_power, Math.min(basePower + rightPower, max_power)));
             telemetry.addData("Status", "Right PID val: " + rightPower);
             telemetry.addData("Status", "Left PID val: " + leftPower);
             telemetry.addData("Status", "Target position: " + rightLiftController.targetPosition);
@@ -130,6 +149,12 @@ public class ManualLift extends LinearOpMode {
             telemetry.addData("Status", "B: " + rightLift.getCurrentPosition());
             telemetry.addData("Status", "Left initial position: " + leftInitialPosition);
             telemetry.addData("Status", "Right initial position: " + rightInitialPosition);
+            telemetry.addData("Status", "Mode switcher value: " + heightModeSwitcher.getValue());
+            telemetry.addData("Status", "Mode switcher index: " + heightModeSwitcher.currentIndex);
+            telemetry.addData("Status", "Mode switcher arr: " + heightModeSwitcher.optionArr);
+            telemetry.addData("Status", "left P: " + leftLiftController.currentP);
+            telemetry.addData("Status", "left I: " + leftLiftController.currentI);
+            telemetry.addData("Status", "left D: " + leftLiftController.currentD);
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
         }
