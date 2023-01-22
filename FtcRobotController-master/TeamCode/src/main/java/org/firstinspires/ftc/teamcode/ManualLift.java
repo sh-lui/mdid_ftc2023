@@ -14,17 +14,6 @@ import org.firstinspires.ftc.teamcode.utils.PIDController;
 
 @TeleOp(name="Manual lift", group="Linear Opmode")
 public class ManualLift extends LinearOpMode {
-    // Hyper-params
-    private double leftInitialPosition = 0;
-    private double rightInitialPosition = 0;
-    private double max_power = 1;
-    private double min_power = -0.1;
-
-    private double liftPID_Kp = 0.0175;
-    private double liftPID_Ki = 0;
-    private double liftPID_Kd = 0.00025;
-    private double liftPID_IErrorThres = 200;
-    private double basePower = 0.1;
 
     private boolean incrementedHeight = false;
     private boolean decrementedHeight = false;
@@ -71,14 +60,8 @@ public class ManualLift extends LinearOpMode {
 
 
             // == Gamepad triggered actions. ==
-
             boolean shouldIncrementHeightMode = gamepad2.dpad_up;
             boolean shouldDecrementHeightMode = gamepad2.dpad_down;
-
-            boolean shouldMove = gamepad2.a;
-
-
-
 
             // === trigger operations ===
             if (shouldIncrementHeightMode && !incrementedHeight) {
@@ -116,8 +99,6 @@ public class ManualLift extends LinearOpMode {
             telemetry.addData("Status", "Right position: " + lift.getRightPosition());
             telemetry.addData("Status", "A: " + leftLift.getCurrentPosition());
             telemetry.addData("Status", "B: " + rightLift.getCurrentPosition());
-            telemetry.addData("Status", "Left initial position: " + leftInitialPosition);
-            telemetry.addData("Status", "Right initial position: " + rightInitialPosition);
             telemetry.addData("Status", "Mode switcher value: " + heightModeSwitcher.getValue());
             telemetry.addData("Status", "Mode switcher index: " + heightModeSwitcher.currentIndex);
             telemetry.addData("Status", "Mode switcher arr: " + heightModeSwitcher.optionArr);
