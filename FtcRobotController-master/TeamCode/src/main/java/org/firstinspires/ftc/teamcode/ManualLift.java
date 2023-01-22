@@ -7,10 +7,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Collections;
+import org.firstinspires.ftc.teamcode.components.CascadeLift;
+import org.firstinspires.ftc.teamcode.utils.ModeSwitcher;
+import org.firstinspires.ftc.teamcode.utils.PIDController;
 
 
 @TeleOp(name="Manual lift", group="Linear Opmode")
@@ -18,14 +17,13 @@ public class ManualLift extends LinearOpMode {
     // Hyper-params
     private double leftInitialPosition = 0;
     private double rightInitialPosition = 0;
-    private double liftMinimumPosition = 0;
-    private double liftMaximumPosition = 700;
     private double max_power = 1;
     private double min_power = -0.1;
 
     private double liftPID_Kp = 0.0175;
     private double liftPID_Ki = 0;
     private double liftPID_Kd = 0.00025;
+    private double liftPID_IErrorThres = 200;
     private double basePower = 0.1;
 
     private boolean incrementedHeight = false;
@@ -38,19 +36,9 @@ public class ManualLift extends LinearOpMode {
     private DcMotor rightLift = null;
 
 
-    public int getPosition() {
-        double leftPosition = ((leftLift.getCurrentPosition() - leftInitialPosition));
-        double rightPosition = ((rightLift.getCurrentPosition() - rightInitialPosition));
-        return (int) (leftPosition + rightPosition) / 2;
-    }
+    // components
+    private CascadeLift lift;
 
-    public int getLeftPosition() {
-        return (int) ((leftLift.getCurrentPosition() - leftInitialPosition));
-    }
-
-    public int getRightPosition() {
-        return (int) ((rightLift.getCurrentPosition() - rightInitialPosition));
-    }
 
     @Override
     public void runOpMode() {
@@ -60,22 +48,21 @@ public class ManualLift extends LinearOpMode {
 
         leftLift.setDirection(DcMotor.Direction.REVERSE);
         rightLift.setDirection(DcMotor.Direction.FORWARD);
-        // Wait for the game to start (driver presses PLAY)
         leftLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+
+        // define the components:
+        lift  = new CascadeLift(leftLift, rightLift);
+
+
+
+        // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
-        // Custom PID controller
-        PIDController leftLiftController = new PIDController(liftPID_Kp, liftPID_Ki, liftPID_Kd);
-        PIDController rightLiftController = new PIDController(liftPID_Kp, liftPID_Ki, liftPID_Kd);
-
-        // get initial position of motor
-        leftInitialPosition = leftLift.getCurrentPosition();
-        rightInitialPosition = rightLift.getCurrentPosition();
 
 
         // run until the end of the match (driver presses STOP)
@@ -90,61 +77,43 @@ public class ManualLift extends LinearOpMode {
 
             boolean shouldMove = gamepad2.a;
 
-            double leftPower;
-            double rightPower;
 
 
-            if (shouldMove) {
 
-                //setArmPower(liftController.getNextRescaledVal(rightLift.getCurrentPosition(), runtime.seconds()));
+            // === trigger operations ===
+            if (shouldIncrementHeightMode && !incrementedHeight) {
 
-                if (shouldIncrementHeightMode && !incrementedHeight) {
-                    heightModeSwitcher.increment();
+                // to prevent executing this multiple times
+                incrementedHeight = true;
+                lift.incrementHeightMode(runtime.seconds());
+                continue;
+            } else if (shouldDecrementHeightMode && !decrementedHeight) {
 
-                    // to prevent executing this multiple times
-                    incrementedHeight = true;
-
-                    leftLiftController.reset((int) heightModeSwitcher.getValue(), getLeftPosition(), runtime.seconds());
-                    rightLiftController.reset((int) heightModeSwitcher.getValue(), getRightPosition(), runtime.seconds());
-                    continue;
-                } else if (shouldDecrementHeightMode && !decrementedHeight) {
-                    heightModeSwitcher.decrement();
-
-                    // to prevent executing this multiple times
-                    decrementedHeight = true;
-
-                    leftLiftController.reset((int) heightModeSwitcher.getValue(), getLeftPosition(), runtime.seconds());
-                    rightLiftController.reset((int) heightModeSwitcher.getValue(), getRightPosition(), runtime.seconds());
-                    continue;
-                }
-
-                // reset value once released
-                if (!shouldDecrementHeightMode) {
-                    decrementedHeight = false;
-                }
-
-                if (!shouldIncrementHeightMode) {
-                    incrementedHeight = false;
-                }
-
-
-                leftPower = leftLiftController.getNextVal(getLeftPosition(), runtime.seconds());
-                rightPower = rightLiftController.getNextVal(getRightPosition(), runtime.seconds());
-
-            } else {
-                leftPower = 0;
-                rightPower = 0;
+                // to prevent executing this multiple times
+                decrementedHeight = true;
+                lift.decrementHeightMode(runtime.seconds());
+                continue;
             }
 
+            // reset value once released
+            if (!shouldDecrementHeightMode) {
+                decrementedHeight = false;
+            }
+
+            if (!shouldIncrementHeightMode) {
+                incrementedHeight = false;
+            }
+
+            //  === Operate the components ===
+            lift.run(runtime.seconds());
 
 
-            leftLift.setPower(Math.max(min_power, Math.min(basePower + leftPower, max_power)));
-            rightLift.setPower(Math.max(min_power, Math.min(basePower + rightPower, max_power)));
-            telemetry.addData("Status", "Right PID val: " + rightPower);
-            telemetry.addData("Status", "Left PID val: " + leftPower);
-            telemetry.addData("Status", "Target position: " + rightLiftController.targetPosition);
-            telemetry.addData("Status", "Left position: " + getLeftPosition());
-            telemetry.addData("Status", "Right position: " + getRightPosition());
+
+            telemetry.addData("Status", "Right PID val: " + lift.rightPower);
+            telemetry.addData("Status", "Left PID val: " + lift.leftPower);
+            telemetry.addData("Status", "Target position: " + lift.rightPIDController.targetPosition);
+            telemetry.addData("Status", "Left position: " + lift.getLeftPosition());
+            telemetry.addData("Status", "Right position: " + lift.getRightPosition());
             telemetry.addData("Status", "A: " + leftLift.getCurrentPosition());
             telemetry.addData("Status", "B: " + rightLift.getCurrentPosition());
             telemetry.addData("Status", "Left initial position: " + leftInitialPosition);
@@ -152,9 +121,9 @@ public class ManualLift extends LinearOpMode {
             telemetry.addData("Status", "Mode switcher value: " + heightModeSwitcher.getValue());
             telemetry.addData("Status", "Mode switcher index: " + heightModeSwitcher.currentIndex);
             telemetry.addData("Status", "Mode switcher arr: " + heightModeSwitcher.optionArr);
-            telemetry.addData("Status", "left P: " + leftLiftController.currentP);
-            telemetry.addData("Status", "left I: " + leftLiftController.currentI);
-            telemetry.addData("Status", "left D: " + leftLiftController.currentD);
+            telemetry.addData("Status", "left P: " + lift.leftPIDController.currentP);
+            telemetry.addData("Status", "left I: " + lift.leftPIDController.currentI);
+            telemetry.addData("Status", "left D: " + lift.leftPIDController.currentD);
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
         }

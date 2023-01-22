@@ -1,15 +1,16 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Collections;
 
-class PIDController {
+public class PIDController {
     // Hyper params
     private double Kp;
     private double Ki;
     private double Kd;
+    private double IErrorThres;
 
     public double currentP;
     public double currentI;
@@ -21,20 +22,11 @@ class PIDController {
     public int targetPosition = 0;
     private ArrayList<Double> errorHistory = new ArrayList<Double>(); // previous 10 errors
 
-    // public boolean isActive = false;
-    private double errorToleration = 0.05;
-    private int errorHistorySize = 10;
-
-
-    private double sigmoid(double x) {
-        return (1 / (1 + Math.pow(Math.E, (-1 * x))));
-    }
-
-    public PIDController(double _Kp, double _Ki, double _Kd) {
+    public PIDController(double _Kp, double _Ki, double _Kd, double _IErrorThres) {
         Kp = _Kp;
         Ki = _Ki;
         Kd = _Kd;
-
+        IErrorThres = _IErrorThres;
     }
 
     public void reset(int _targetPosition, int _currentPosition, double runTime) {
@@ -50,39 +42,22 @@ class PIDController {
 
         // P
         double error = targetPosition - currentPosition;
-        currentP = Kp * error;
         // I
-        errorSum += error * timeElapsed;
-        currentI = Ki * errorSum;
+        errorSum += (Math.abs(error) < IErrorThres) ? error * timeElapsed : 0;
         // D
         double errorDer = (error - previousError) / timeElapsed;
-        currentD = Kd * errorDer;
 
+        // record legacy values.
         previousError = error;
         previousRunTime = runTime;
 
-        double result = currentP + currentI + currentD;
+        // public variables for debugging and fine tuning.
+        currentP = Kp * error;
+        currentI = Ki * errorSum;
+        currentD = Kd * errorDer;
 
-        // Add to history and determining the stopping condition.
-
-        /* 
-        errorHistory.add(error); 
-        if (errorHistory.size() > errorHistorySize) { 
-            errorHistory.remove(0); 
-            if (Collections.max(errorHistory) < errorToleration) { 
-                isActive = false; 
-            } 
-        } 
-         */
-
-
-        return result;
+        return currentP + currentI + currentD;
     }
-
-    public double getNextRescaledVal(double currentPosition, double timeElapsed) {
-        return sigmoid(getNextVal(currentPosition, timeElapsed));
-    }
-
 
 }
 
