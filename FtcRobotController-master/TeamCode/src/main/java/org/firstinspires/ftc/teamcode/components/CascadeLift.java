@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.utils.ModeSwitcher;
 import org.firstinspires.ftc.teamcode.utils.PIDController;
 
-public class CascadeLift {
+public class CascadeLift extends BaseComponent{
     private double leftInitialPosition = 0;
     private double rightInitialPosition = 0;
     private double max_power = 1;
@@ -59,8 +59,8 @@ public class CascadeLift {
 
     public void setTargetHeight(double value, double time) {
 
-        leftPIDController.reset((int) time, getLeftPosition(), time);
-        rightPIDController.reset((int) time, getRightPosition(), time);
+        leftPIDController.reset(value, getLeftPosition(), time);
+        rightPIDController.reset(value, getRightPosition(), time);
     }
 
     public void incrementHeightMode(double time) {

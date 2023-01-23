@@ -14,6 +14,10 @@ public class OdometryEngine {
     private double encoderVerticalSpan;
     private double encoderHorizontalSpan;
 
+    private int encoder1PreviousPosition = 0;
+    private int encoder2PreviousPosition = 0;
+    private int encoder3PreviousPosition = 0;
+
     public OdometryEngine(RobotPosition _currentPosition) {
         currentPosition = _currentPosition;
     }
@@ -26,17 +30,27 @@ public class OdometryEngine {
         configured = true;
     }
 
+    public void resetEncoderPosition(int pos1, int pos2, int pos3) {
+        encoder1PreviousPosition = pos1;
+        encoder2PreviousPosition = pos2;
+        encoder3PreviousPosition = pos3;
+    }
+
     public void resetPosition(RobotPosition _currentPosition) {
         currentPosition = _currentPosition;
     }
 
-    public RobotPosition getCurrentPosition() throws Exception {
-        _assertConfigured();
+    public RobotPosition getCurrentPosition() {
         return currentPosition;
     }
 
-    public void updatePosition(int encoder1Ticks, int encoder2Ticks, int encoder3Ticks) throws Exception {
+    public void updatePosition(int encoder1Position, int encoder2Position, int encoder3Position) throws Exception {
         _assertConfigured();
+
+        int encoder1Ticks,  encoder2Ticks, encoder3Ticks;
+        encoder1Ticks = encoder1PreviousPosition - encoder1Position;
+        encoder2Ticks = encoder2PreviousPosition - encoder2Position;
+        encoder3Ticks = encoder3PreviousPosition - encoder3Position;
 
         double deltaX, deltaY, deltaTheta;
 

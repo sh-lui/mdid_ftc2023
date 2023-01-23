@@ -47,7 +47,6 @@ public class ManualLift extends LinearOpMode {
         lift  = new CascadeLift(leftLift, rightLift);
 
 
-
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
@@ -63,7 +62,7 @@ public class ManualLift extends LinearOpMode {
             boolean shouldIncrementHeightMode = gamepad2.dpad_up;
             boolean shouldDecrementHeightMode = gamepad2.dpad_down;
 
-            // === trigger operations ===
+            // === Operation logic ===
             if (shouldIncrementHeightMode && !incrementedHeight) {
 
                 // to prevent executing this multiple times

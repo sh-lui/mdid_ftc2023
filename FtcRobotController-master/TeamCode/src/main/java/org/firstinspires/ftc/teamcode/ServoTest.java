@@ -7,28 +7,21 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.components.Arm;
+
 @TeleOp(name="Manual servo test", group="Linear Opmode")
 public class ServoTest extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
-    private double MIN_POSITION = 0;
-    private double MAX_POSITION = 0.65;
-    private double currentPosition = 0;
-    private double armRaiseRate = 0.004;
     private ElapsedTime runtime = new ElapsedTime();
-    private Servo leftArm = null;
-    private Servo rightArm = null;
+    private Servo leftServo = null;
+    private Servo rightServo = null;
 
-    public double incrementPosition(double currentValue, double triggerValue) {
-        return Math.max(MIN_POSITION, Math.min( currentPosition + triggerValue * armRaiseRate, MAX_POSITION));
-    }
     @Override
     public void runOpMode() {
 
-        leftArm = hardwareMap.get(Servo.class, "left_arm");
-        rightArm = hardwareMap.get(Servo.class, "right_arm");
-
-
+        leftServo = hardwareMap.get(Servo.class, "left_arm");
+        rightServo = hardwareMap.get(Servo.class, "right_arm");
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -37,23 +30,27 @@ public class ServoTest extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        // Define the components
+        Arm arm = new Arm(leftServo, rightServo);
+
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             // Setup a variable for each drive wheel to save power level for telemetry
 
+            // receive input
             double armIncrementValue = gamepad2.right_stick_y;
-            //double rightTriggerValue = gamepad2.right_trigger;
 
-            currentPosition = incrementPosition(currentPosition, armIncrementValue);
+            // logic
+            arm.incrementPosition(armIncrementValue);
 
-            leftArm.setPosition(currentPosition);
-            rightArm.setPosition(1 - currentPosition);
+            // run components
+            arm.run(runtime.seconds());
+
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Status", "increment power: " + armIncrementValue);
-            telemetry.addData("Status", "current position: " + currentPosition);
-            telemetry.addData("Motor position l", "Position: " + leftArm.getPosition());
-            telemetry.addData("Motor position r", "Position: " + rightArm.getPosition());
+            telemetry.addData("Status", "current position: " + arm.getCurrentPosition());
             telemetry.update();
         }
 

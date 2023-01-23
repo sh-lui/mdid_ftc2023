@@ -18,8 +18,8 @@ public class PIDController {
 
     private double errorSum;
     private double previousError;
-    public double previousRunTime;
-    public int targetPosition = 0;
+    public double previousRuntime;
+    public double targetPosition = 0;
     private ArrayList<Double> errorHistory = new ArrayList<Double>(); // previous 10 errors
 
     public PIDController(double _Kp, double _Ki, double _Kd, double _IErrorThres) {
@@ -29,16 +29,16 @@ public class PIDController {
         IErrorThres = _IErrorThres;
     }
 
-    public void reset(int _targetPosition, int _currentPosition, double runTime) {
+    public void reset(double _targetPosition, double _currentPosition, double runtime) {
         errorSum = (double) 0;
         targetPosition = _targetPosition;
         previousError = (double) (_currentPosition - _targetPosition);
-        previousRunTime = runTime;
+        previousRuntime = runtime;
     }
 
 
-    public double getNextVal(double currentPosition, double runTime) {
-        double timeElapsed = runTime - previousRunTime;
+    public double getNextVal(double currentPosition, double runtime) {
+        double timeElapsed = runtime - previousRuntime;
 
         // P
         double error = targetPosition - currentPosition;
@@ -49,7 +49,7 @@ public class PIDController {
 
         // record legacy values.
         previousError = error;
-        previousRunTime = runTime;
+        previousRuntime = runtime;
 
         // public variables for debugging and fine tuning.
         currentP = Kp * error;
