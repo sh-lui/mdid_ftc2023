@@ -18,7 +18,7 @@ public class DriveBase extends BaseComponent {
     public double robotStartTheta = 0;
 
     public double encoderRadius = 0;
-    public double encoderTicksPerRevolution = 0;
+    public double encoderTicksPerRevolution = 1000;
     public double encoderVerticalSpan = 0;
     public double encoderHorizontalSpan = 0;
 

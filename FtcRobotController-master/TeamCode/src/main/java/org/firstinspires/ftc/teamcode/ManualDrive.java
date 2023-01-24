@@ -36,10 +36,9 @@ public class ManualDrive extends LinearOpMode {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
 
-        encoder1 = hardwareMap.get(DcMotor.class, "encoder1");
-        encoder2 = hardwareMap.get(DcMotor.class, "encoder2");
-        encoder3 = hardwareMap.get(DcMotor.class, "encoder3");
-
+        encoder1 = hardwareMap.get(DcMotor.class, "right_back_drive");
+        encoder2 = hardwareMap.get(DcMotor.class, "left_back_drive");
+        encoder3 = hardwareMap.get(DcMotor.class, "left_front_drive");
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -78,6 +77,9 @@ public class ManualDrive extends LinearOpMode {
             RobotPosition currentPosition = driveBase.odometryEngine.getCurrentPosition();
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Status", "Position: X: " +  currentPosition.X + " Y: " + currentPosition.Y + " Theta: " + currentPosition.Theta);
+            telemetry.addData("Status", "e1: " + encoder1.getCurrentPosition());
+            telemetry.addData("Status", "e2: " + encoder2.getCurrentPosition());
+            telemetry.addData("Status", "e3: " + encoder3.getCurrentPosition());
             telemetry.update();
         }
     }}
