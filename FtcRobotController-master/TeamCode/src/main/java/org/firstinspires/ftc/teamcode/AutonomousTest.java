@@ -67,7 +67,7 @@ public class AutonomousTest extends LinearOpMode {
 
 
 
-        RobotPosition robotTarget = new RobotPosition(1, 1, Math.PI);
+        RobotPosition robotTarget = new RobotPosition(0, 1000, Math.PI);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {

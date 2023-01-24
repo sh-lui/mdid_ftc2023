@@ -63,11 +63,17 @@ public class OdometryEngine {
         double deltaE2 = _getEncoderDistanceFromTicks(encoder2Ticks);
         double deltaE3 = _getEncoderDistanceFromTicks(encoder3Ticks);
 
+        // calculate the changes in the robot-coordinate
         deltaX = (deltaE1 + deltaE2) / 2;
         deltaTheta = (deltaE2 - deltaE1) / encoderVerticalSpan;
         deltaY = deltaE3  - encoderHorizontalSpan * deltaTheta;
 
-        currentPosition.incrementValues(deltaX, deltaY, deltaTheta);
+        // adjust the values for the field-coordinate
+        currentPosition.incrementValues(
+            deltaX * Math.cos(currentPosition.Theta) - deltaY * Math.sin(currentPosition.Theta),
+            deltaY * Math.sin(currentPosition.Theta) + deltaY * Math.cos(currentPosition.Theta),
+            deltaTheta
+        );
 
 
         // update the position

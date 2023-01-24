@@ -9,7 +9,7 @@ public class Claw extends BaseComponent {
     public Servo rightServo;
 
 
-    public ModeSwitcher servoPositions = new ModeSwitcher(new double[]{0, 0.3}, 0);
+    public ModeSwitcher servoPositions = new ModeSwitcher(new double[]{0.3, 0.6}, 0);
 
     public Claw(Servo _leftServo, Servo _rightServo) {
         leftServo = _leftServo;
