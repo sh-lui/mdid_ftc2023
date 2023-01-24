@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.components.CascadeLift;
 import org.firstinspires.ftc.teamcode.utils.ModeSwitcher;
-import org.firstinspires.ftc.teamcode.utils.PIDController;
 
 
 @TeleOp(name="Manual lift", group="Linear Opmode")

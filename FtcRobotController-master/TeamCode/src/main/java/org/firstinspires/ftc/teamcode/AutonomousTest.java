@@ -78,7 +78,6 @@ public class AutonomousTest extends LinearOpMode {
             // === Operation logic ===
             if (setTarget) {
                 driveBase.setTarget(robotTarget, runtime.seconds());
-                continue;
             }
 
             //  === Operate the components ===
