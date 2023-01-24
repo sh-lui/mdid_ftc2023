@@ -18,6 +18,11 @@ public class OdometryEngine {
     private int encoder2PreviousPosition = 0;
     private int encoder3PreviousPosition = 0;
 
+    // public for debugging
+    public double deltaX = 0;
+    public double deltaY = 0;
+    public double deltaTheta = 0;
+
     public OdometryEngine(RobotPosition _currentPosition) {
         currentPosition = _currentPosition;
     }
@@ -48,21 +53,27 @@ public class OdometryEngine {
         _assertConfigured();
 
         int encoder1Ticks,  encoder2Ticks, encoder3Ticks;
-        encoder1Ticks = encoder1PreviousPosition - encoder1Position;
-        encoder2Ticks = encoder2PreviousPosition - encoder2Position;
-        encoder3Ticks = encoder3PreviousPosition - encoder3Position;
+        encoder1Ticks = encoder1Position - encoder1PreviousPosition;
+        encoder2Ticks = encoder2Position - encoder2PreviousPosition;
+        encoder3Ticks = encoder3Position - encoder3PreviousPosition;
 
-        double deltaX, deltaY, deltaTheta;
 
+        //double deltaX, deltaY, deltaTheta;
         double deltaE1 = _getEncoderDistanceFromTicks(encoder1Ticks);
         double deltaE2 = _getEncoderDistanceFromTicks(encoder2Ticks);
         double deltaE3 = _getEncoderDistanceFromTicks(encoder3Ticks);
 
         deltaX = (deltaE1 + deltaE2) / 2;
-        deltaY = deltaE3  - encoderHorizontalSpan * (deltaE2 - deltaE1) / encoderVerticalSpan;
         deltaTheta = (deltaE2 - deltaE1) / encoderVerticalSpan;
+        deltaY = deltaE3  - encoderHorizontalSpan * deltaTheta;
 
         currentPosition.incrementValues(deltaX, deltaY, deltaTheta);
+
+
+        // update the position
+        encoder1PreviousPosition = encoder1Position;
+        encoder2PreviousPosition = encoder2Position;
+        encoder3PreviousPosition = encoder3Position;
     }
 
     private void _assertConfigured() throws Exception {

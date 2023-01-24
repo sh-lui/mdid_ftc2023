@@ -97,9 +97,7 @@ public class ManualLift extends LinearOpMode {
             telemetry.addData("Status", "Right position: " + lift.getRightPosition());
             telemetry.addData("Status", "A: " + leftLift.getCurrentPosition());
             telemetry.addData("Status", "B: " + rightLift.getCurrentPosition());
-            telemetry.addData("Status", "Mode switcher value: " + heightModeSwitcher.getValue());
-            telemetry.addData("Status", "Mode switcher index: " + heightModeSwitcher.currentIndex);
-            telemetry.addData("Status", "Mode switcher arr: " + heightModeSwitcher.optionArr);
+            telemetry.addData("Status", "Mode switcher value: " + lift.heightModeSwitcher.getValue());
             telemetry.addData("Status", "left P: " + lift.leftPIDController.currentP);
             telemetry.addData("Status", "left I: " + lift.leftPIDController.currentI);
             telemetry.addData("Status", "left D: " + lift.leftPIDController.currentD);

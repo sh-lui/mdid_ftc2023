@@ -26,7 +26,6 @@ public class Claw extends BaseComponent {
     public void run(double runtime) {
         leftServo.setPosition(servoPositions.getValue());
         rightServo.setPosition(-servoPositions.getValue());
-
     }
 
 }

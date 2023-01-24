@@ -10,13 +10,15 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.components.Claw;
 import org.firstinspires.ftc.teamcode.utils.PIDController;
 
-@TeleOp(name="Manual servo test", group="Linear Opmode")
+@TeleOp(name="Manual claw test", group="Linear Opmode")
 public class ClawTest extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
     private Servo leftServo = null;
     private Servo rightServo = null;
+
+    private boolean hasToggledHeight = false;
 
     @Override
     public void runOpMode() {
@@ -43,8 +45,14 @@ public class ClawTest extends LinearOpMode {
             boolean clawIncrementValue = gamepad2.a;
 
             // logic
-            if (clawIncrementValue) {
+            if (clawIncrementValue && !hasToggledHeight) {
                 claw.togglePosition();
+                hasToggledHeight = true;
+            }
+
+            if (!clawIncrementValue) {
+                hasToggledHeight = false;
+
             }
 
             // run components

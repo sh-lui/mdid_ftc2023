@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.service.autofill.DateValueSanitizer;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.components.DriveBase;
@@ -39,6 +42,8 @@ public class ManualDrive extends LinearOpMode {
         encoder1 = hardwareMap.get(DcMotor.class, "right_back_drive");
         encoder2 = hardwareMap.get(DcMotor.class, "left_back_drive");
         encoder3 = hardwareMap.get(DcMotor.class, "left_front_drive");
+
+
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -80,6 +85,10 @@ public class ManualDrive extends LinearOpMode {
             telemetry.addData("Status", "e1: " + encoder1.getCurrentPosition());
             telemetry.addData("Status", "e2: " + encoder2.getCurrentPosition());
             telemetry.addData("Status", "e3: " + encoder3.getCurrentPosition());
+
+            telemetry.addData("Status", "dx: " + driveBase.odometryEngine.deltaX);
+            telemetry.addData("Status", "dy: " + driveBase.odometryEngine.deltaY);
+            telemetry.addData("Status", "dt: " + driveBase.odometryEngine.deltaTheta);
             telemetry.update();
         }
     }}
