@@ -7,11 +7,11 @@ public class Arm extends BaseComponent {
     public Servo leftServo;
     public Servo rightServo;
 
-    private double MIN_POSITION = 0;
+    private double MIN_POSITION = 0.02;
     private double MAX_POSITION = 0.65;
 
     private double currentPosition = 0;
-    private double armRaiseRate = 0.004;
+    private double armRaiseRate = -0.08;
 
     public Arm(Servo _leftServo, Servo _rightServo) {
         leftServo =  _leftServo;

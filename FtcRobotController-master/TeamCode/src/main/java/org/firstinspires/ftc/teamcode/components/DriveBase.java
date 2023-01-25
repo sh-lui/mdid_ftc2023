@@ -1,13 +1,10 @@
 package org.firstinspires.ftc.teamcode.components;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.robot.Robot;
 
-import org.firstinspires.ftc.robotcore.internal.android.dx.command.dump.BaseDumper;
 import org.firstinspires.ftc.teamcode.utils.RobotPosition;
 import org.firstinspires.ftc.teamcode.utils.OdometryEngine;
 
-import org.firstinspires.ftc.teamcode.utils.ModeSwitcher;
 import org.firstinspires.ftc.teamcode.utils.PIDController;
 import org.firstinspires.ftc.teamcode.utils.RobotWheelPower;
 
@@ -20,11 +17,20 @@ public class DriveBase extends BaseComponent {
     public double encoderRadius = 19;
     public double encoderTicksPerRevolution = 8192;
     public double encoderVerticalSpan = 340;
-    public double encoderHorizontalSpan = 47.0;
+    public double encoderHorizontalSpan = 48.53;
 
     public double angularOffsetTolerance = 0.00001;
     public double translationalOffsetTolerance = 0.000001;
 
+    private double translationalPID_Kp = 0.04;
+    private double translationalPID_Ki = 0;
+    private double translationalPID_Kd = 0.005;
+    private double translationalPID_IErrorThres = 200;
+
+    private double angularPID_Kp = 2;
+    private double angularPID_Ki = 0;
+    private double angularPID_Kd = 0.05;
+    private double angularPID_IErrorThres = 200;
 
 
     public DcMotor leftFrontMotor = null;
@@ -42,6 +48,12 @@ public class DriveBase extends BaseComponent {
     public PIDController angularPIDController = null;
     public PIDController translationalPIDController = null;
 
+    public double autoTurn;
+    public double autoTheta;
+    public double autoPower;
+
+    public double angularOffset;
+
     public DriveBase(DcMotor _leftFrontMotor, DcMotor _leftRearMotor, DcMotor _rightFrontMotor,  DcMotor _rightRearMotor, DcMotor _encoder1, DcMotor _encoder2, DcMotor _encoder3) {
         leftFrontMotor = _leftFrontMotor;
         leftRearMotor = _leftRearMotor;
@@ -56,6 +68,9 @@ public class DriveBase extends BaseComponent {
         odometryEngine = new OdometryEngine(currentPosition);
         odometryEngine.configureEncoder(encoderRadius, encoderTicksPerRevolution, encoderVerticalSpan, encoderHorizontalSpan);
         odometryEngine.resetEncoderPosition(encoder1.getCurrentPosition(), encoder2.getCurrentPosition(), encoder3.getCurrentPosition());
+
+        translationalPIDController = new PIDController(translationalPID_Kp, translationalPID_Ki, translationalPID_Kd, translationalPID_IErrorThres);
+        angularPIDController = new PIDController(angularPID_Kp, angularPID_Ki, angularPID_Kd, angularPID_IErrorThres);
     }
 
     private RobotWheelPower getMotorPowerFromAngularPower(double theta, double power, double turn) {
@@ -88,15 +103,19 @@ public class DriveBase extends BaseComponent {
         angularPIDController.reset(0, -1 * _getAngularOffset(odometryEngine.getCurrentPosition(), targetPosition), runtime);
     }
 
+
     public void run(double runtime) {
         try { odometryEngine.updatePosition(encoder1.getCurrentPosition(), encoder2.getCurrentPosition(), encoder3.getCurrentPosition()); } catch (Exception ignore) { }
 
         if (targetPosition != null) {
-            double theta, power, turn;
-            theta = _getTargetAngle(odometryEngine.getCurrentPosition(), targetPosition);
-            power = translationalPIDController.getNextVal(-1 * _getCartesianDistance(odometryEngine.getCurrentPosition(), targetPosition), runtime);
-            turn = angularPIDController.getNextVal(-1 * _getAngularOffset(odometryEngine.getCurrentPosition(), targetPosition), runtime);
-            _setAngularPower(theta, power, turn);
+            //double theta, power, turn;
+            autoTheta = _getTargetAngle(odometryEngine.getCurrentPosition(), targetPosition) + Math.PI/2;
+            autoPower = _scaledShiftedSigmoid(translationalPIDController.getNextVal(-1 * _getCartesianDistance(odometryEngine.getCurrentPosition(), targetPosition), runtime), 0.9);
+
+            angularOffset = _getAngularOffset(odometryEngine.getCurrentPosition(), targetPosition);
+            autoTurn = _scaledShiftedSigmoid(angularPIDController.getNextVal(-1 * angularOffset, runtime), 0.9);
+
+            _setAngularPower(autoTheta, autoPower, -autoTurn);
 
             if (targetReached()) {
                 dropTarget();
@@ -122,6 +141,13 @@ public class DriveBase extends BaseComponent {
         _setAngularPower(theta, power, turn);
     }
 
+    private double _setHardLimit(double value, double min, double max) {
+        return Math.min(Math.max(value, min), max);
+    }
+
+    private double _normalizeAngle(double angle) {
+        return angle % (2 * Math.PI);
+    }
     private void _setAngularPower(double theta, double power, double turn) {
         RobotWheelPower wheelPower = getMotorPowerFromAngularPower(theta, power, turn);
         _setPower(wheelPower);
@@ -136,7 +162,7 @@ public class DriveBase extends BaseComponent {
     }
 
     private double _getTargetAngle(RobotPosition pos1, RobotPosition pos2) {
-        return Math.atan2(pos2.Y - pos1.Y, pos2.X - pos1.X);
+        return Math.atan2(pos2.Y - pos1.Y, pos2.X - pos1.X) - pos1.Theta;
 
     }
 
@@ -145,7 +171,16 @@ public class DriveBase extends BaseComponent {
     }
 
     private double _getAngularOffset(RobotPosition pos1, RobotPosition pos2) {
-        return pos2.Theta - pos1.Theta;
+        return _normalizeAngle(pos2.Theta- pos1.Theta);
+    }
+
+    private double _shiftedSigmoid(double x) {
+        return 1 / (1 + Math.pow(Math.E, -x)) - 0.5;
+    }
+
+    private double _scaledShiftedSigmoid(double x, double factor) {
+        return factor * _shiftedSigmoid(x);
+
     }
 
 }

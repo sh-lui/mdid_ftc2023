@@ -114,6 +114,7 @@ public class Manual extends LinearOpMode {
             double drive_x =  gamepad1.left_stick_x;
             double drive_y = -gamepad1.left_stick_y;
             double drive_turn =  gamepad1.right_stick_x;
+            boolean showLowerDriveSpeed = gamepad1.left_bumper || gamepad1.right_bumper;
 
             double drive_theta = Math.atan2(drive_y, drive_x);
             double drive_power = Math.hypot(drive_x, drive_y);
@@ -140,7 +141,7 @@ public class Manual extends LinearOpMode {
             }
 
             // control the wheels:
-            driveBase.manualSetAngularPower(drive_theta, drive_power, drive_turn);
+            driveBase.manualSetAngularPower(drive_theta, showLowerDriveSpeed ? 0.2 * drive_power : drive_power, showLowerDriveSpeed ? 0.2 * drive_turn : drive_turn);
 
             // control the arm:
             arm.incrementPosition(armIncrementValue);

@@ -72,7 +72,7 @@ public class ManualDrive extends LinearOpMode {
             double power = Math.hypot(x, y);
 
             // programming logic
-            driveBase.manualSetAngularPower(theta, power, turn);
+            driveBase.manualSetAngularPower(theta, 0.1 * power, 0.1 * turn);
 
             // running components
             driveBase.run(runtime.seconds());
@@ -89,6 +89,12 @@ public class ManualDrive extends LinearOpMode {
             telemetry.addData("Status", "dx: " + driveBase.odometryEngine.deltaX);
             telemetry.addData("Status", "dy: " + driveBase.odometryEngine.deltaY);
             telemetry.addData("Status", "dt: " + driveBase.odometryEngine.deltaTheta);
+
+            telemetry.addData("Status", "turn: " + turn);
+            telemetry.addData("Status", "theta: " + theta);
+            telemetry.addData("Status", "power: " + power);
+
+
             telemetry.update();
         }
     }}

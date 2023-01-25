@@ -9,7 +9,7 @@ public class Claw extends BaseComponent {
     public Servo rightServo;
 
 
-    public ModeSwitcher servoPositions = new ModeSwitcher(new double[]{0.3, 0.6}, 0);
+    public ModeSwitcher servoPositions = new ModeSwitcher(new double[]{0.28, 0.33}, 1);
 
     public Claw(Servo _leftServo, Servo _rightServo) {
         leftServo = _leftServo;
@@ -25,7 +25,7 @@ public class Claw extends BaseComponent {
     }
     public void run(double runtime) {
         leftServo.setPosition(servoPositions.getValue());
-        rightServo.setPosition(-servoPositions.getValue());
+        rightServo.setPosition(1-servoPositions.getValue());
     }
 
 }
