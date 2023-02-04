@@ -9,16 +9,16 @@ public class CascadeLift extends BaseComponent{
     private double leftInitialPosition = 0;
     private double rightInitialPosition = 0;
     private double max_power = 1;
-    private double min_power = -0.05;
+    private double min_power = -1;
 
-    private double liftPID_Kp = 0.04;
+    private double liftPID_Kp = 0.015;
     private double liftPID_Ki = 0;
-    private double liftPID_Kd = 0.00005;
+    private double liftPID_Kd = 0.000058;
     private double liftPID_IErrorThres = 200;
     private double basePower = 0.1;
 
     // variables set public for debugging purposes
-    public ModeSwitcher heightModeSwitcher = new ModeSwitcher(new double[]{0, 200, 470, 720}, 0);
+    public ModeSwitcher heightModeSwitcher = new ModeSwitcher(new double[]{0, 1000, 2620, 4000}, 0);
     public DcMotor leftMotor = null;
     public DcMotor rightMotor = null;
 
