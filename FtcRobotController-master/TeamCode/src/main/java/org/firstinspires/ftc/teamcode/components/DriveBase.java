@@ -104,6 +104,19 @@ public class DriveBase extends BaseComponent {
     }
 
 
+    public void syncRunToPosition(RobotPosition targetPosition, double runtime) {
+        double startTime, currentTime;
+
+        RobotPosition robotTarget = new RobotPosition(0, 1000, Math.PI);
+        startTime = System.currentTimeMillis() / 1000L; // get the unix time
+        this.setTarget(robotTarget, runtime);
+        while (targetPosition != null) {
+            currentTime = System.currentTimeMillis() / 1000L;
+            this.run(runtime + (currentTime - startTime));
+        }
+
+    }
+
     public void run(double runtime) {
         try { odometryEngine.updatePosition(encoder1.getCurrentPosition(), encoder2.getCurrentPosition(), encoder3.getCurrentPosition()); } catch (Exception ignore) { }
 

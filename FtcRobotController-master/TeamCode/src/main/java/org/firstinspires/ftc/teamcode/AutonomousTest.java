@@ -73,31 +73,29 @@ public class AutonomousTest extends LinearOpMode {
 
 
         RobotPosition robotTarget = new RobotPosition(0, 1000, Math.PI);
-        driveBase.setTarget(robotTarget, runtime.seconds());
+        driveBase.syncRunToPosition(robotTarget, runtime.seconds());
 
-        while (opModeIsActive()) {
+        //driveBase.setTarget(robotTarget, runtime.seconds());
+        //
+        //while (opModeIsActive()) {
+        //    //  === Operate the components ===
+        //    driveBase.run(runtime.seconds());
 
-            // === Operation logic ===
+        //    RobotPosition currentPosition = driveBase.odometryEngine.getCurrentPosition();
+        //    telemetry.addData("Status", "Run Time: " + runtime.toString());
+        //    telemetry.addData("Status", "X: " + currentPosition.X);
+        //    telemetry.addData("Status", "Y: "  + currentPosition.Y);
+        //    telemetry.addData("Status", "Theta: " + currentPosition.Theta);
 
-            //  === Operate the components ===
-            driveBase.run(runtime.seconds());
+        //    telemetry.addData("Status", "Target X: " + driveBase.targetPosition.X);
+        //    telemetry.addData("Status", "Target Y: " + driveBase.targetPosition.Y);
+        //    telemetry.addData("Status", "Target Theta: " + driveBase.targetPosition.Theta);
 
-
-            RobotPosition currentPosition = driveBase.odometryEngine.getCurrentPosition();
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Status", "X: " + currentPosition.X);
-            telemetry.addData("Status", "Y: "  + currentPosition.Y);
-            telemetry.addData("Status", "Theta: " + currentPosition.Theta);
-
-            telemetry.addData("Status", "Target X: " + driveBase.targetPosition.X);
-            telemetry.addData("Status", "Target Y: " + driveBase.targetPosition.Y);
-            telemetry.addData("Status", "Target Theta: " + driveBase.targetPosition.Theta);
-
-            telemetry.addData("Status", "autoTheta: " + driveBase.autoTheta);
-            telemetry.addData("Status", "autoPower: " + driveBase.autoPower);
-            telemetry.addData("Status", "autoTurn: " + driveBase.autoTurn);
-            telemetry.addData("Status", "angularOffset: " + driveBase.angularOffset);
-            telemetry.update();
-        }
+        //    telemetry.addData("Status", "autoTheta: " + driveBase.autoTheta);
+        //    telemetry.addData("Status", "autoPower: " + driveBase.autoPower);
+        //    telemetry.addData("Status", "autoTurn: " + driveBase.autoTurn);
+        //    telemetry.addData("Status", "angularOffset: " + driveBase.angularOffset);
+        //    telemetry.update();
+        //}
     }
 }
