@@ -93,6 +93,7 @@ public class AutonomousTest extends LinearOpMode {
                 // set the new target
                 driveBase.setTarget(traversalPath[currentTraversalStage], runtime.seconds());
             }
+            telemetry.addData("Status", "stage: intermediate dunk");
             telemetry.addData("Status", "x: " + driveBase.odometryEngine.getCurrentPosition().X);
             telemetry.addData("Status", "y: " + driveBase.odometryEngine.getCurrentPosition().Y);
             telemetry.addData("Status", "theta: " + driveBase.odometryEngine.getCurrentPosition().Theta);
@@ -153,6 +154,7 @@ public class AutonomousTest extends LinearOpMode {
                 driveBase.setTarget(traversalPath[currentTraversalStage], runtime.seconds());
             }
 
+            telemetry.addData("Status", "stage: lower and grab");
             telemetry.addData("Status", "x: " + driveBase.odometryEngine.getCurrentPosition().X);
             telemetry.addData("Status", "y: " + driveBase.odometryEngine.getCurrentPosition().Y);
             telemetry.addData("Status", "theta: " + driveBase.odometryEngine.getCurrentPosition().Theta);
@@ -215,6 +217,7 @@ public class AutonomousTest extends LinearOpMode {
                 // set the new target
                 driveBase.setTarget(traversalPath[currentTraversalStage], runtime.seconds());
             }
+            telemetry.addData("Status", "stage: initial dunk");
             telemetry.addData("Status", "x: " + driveBase.odometryEngine.getCurrentPosition().X);
             telemetry.addData("Status", "y: " + driveBase.odometryEngine.getCurrentPosition().Y);
             telemetry.addData("Status", "theta: " + driveBase.odometryEngine.getCurrentPosition().Theta);
