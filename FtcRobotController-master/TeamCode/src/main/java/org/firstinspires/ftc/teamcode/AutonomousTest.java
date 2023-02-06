@@ -62,7 +62,7 @@ public class AutonomousTest extends LinearOpMode {
 
     public void intermediateDunk() throws InterruptedException {
         RobotPosition anchorPos1 = new RobotPosition(900, 1400, Math.PI);
-        RobotPosition dunkPos1 = new RobotPosition(1028.4349 - 50 + 10, 1561.746 + 20 + 10 + 10, 3.8671723 + 0.02);
+        RobotPosition dunkPos1 = new RobotPosition(1028.4349 - 50 + 10 + 5, 1561.746 + 20 + 10 + 10 + 5, 3.8671723 + 0.02);
 
         int currentTraversalStage = 0;
         RobotPosition[] traversalPath = {anchorPos1, dunkPos1};
@@ -82,7 +82,7 @@ public class AutonomousTest extends LinearOpMode {
 
                 // additional operations for entering new stage.
                 if (currentTraversalStage == 1) {
-                    driveBase.overrideTolerance(7, 0.07);
+                    driveBase.overrideTolerance(4, 0.07);
                     driveBase.overrideTranslationalPID(0.019, 0, 0.002);
                     driveBase.overrideAngularPID(1.4, 0, 0.05);
                     driveBase.overrideTranslationalCap(0.4);
@@ -188,7 +188,7 @@ public class AutonomousTest extends LinearOpMode {
 
     public void initialDunk() throws InterruptedException {
         RobotPosition anchorPos1 = new RobotPosition(800, 1600, 3.96228139852);
-        RobotPosition dunkPos1 = new RobotPosition(1028.4349 - 50 + 10, 1561.746 + 20 + 10 + 10, 3.8671723 + 0.02);
+        RobotPosition dunkPos1 = new RobotPosition(1028.4349 - 50 + 10 + 5, 1561.746 + 20 + 10 + 10 + 5, 3.8671723 + 0.02);
 
         int currentTraversalStage = 0;
         RobotPosition[] traversalPath = {anchorPos1, dunkPos1};
@@ -208,7 +208,7 @@ public class AutonomousTest extends LinearOpMode {
 
                 // additional operations for entering new stage.
                 if (currentTraversalStage == 1) {
-                    driveBase.overrideTolerance(7, 0.07);
+                    driveBase.overrideTolerance(4, 0.07);
                     driveBase.overrideTranslationalPID(0.019, 0, 0.002);
                     driveBase.overrideAngularPID(1.4, 0, 0.05);
                     driveBase.overrideTranslationalCap(0.4);
