@@ -133,8 +133,10 @@ public class AutonomousTest extends LinearOpMode {
         driveBase.overrideAngularCap(0.6);
         driveBase.setTarget(traversalPath[currentTraversalStage], runtime.seconds());
         lift.setTargetHeight((coneNumber-1) * stackedConeOffsetHeight, runtime.seconds());
-        arm.prepareGrab();
         claw.open();
+        Thread.sleep(50);
+        arm.prepareGrab();
+        Thread.sleep(100);
         while (opModeIsActive() && (!lift.targetReached() || !(driveBase.targetReached() && currentTraversalStage == traversalPath.length - 1) )) {
             driveBase.run(runtime.seconds());
             lift.run(runtime.seconds());
@@ -146,8 +148,8 @@ public class AutonomousTest extends LinearOpMode {
                     driveBase.overrideTolerance(30, 0.1);
                     driveBase.overrideTranslationalPID(0.04, 0, 0.002);
                     driveBase.overrideAngularPID(0.5, 0, 0.05);
-                    driveBase.overrideTranslationalCap(0.45);
-                    driveBase.overrideAngularCap(0.45);
+                    driveBase.overrideTranslationalCap(0.35);
+                    driveBase.overrideAngularCap(0.35);
                 }
 
                 // set the new target
