@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.utils.RobotPosition;
 @Autonomous(name="Autonomous Text.")
 public class AutonomousTest extends LinearOpMode {
 
-    private double dunkHeight = 4000 - 85; // in motor encoder ticks
+    private double dunkHeight = 4000 - 85 + 45; // in motor encoder ticks
     private double stackedConeOffsetHeight = 179.41117; // in motor encoder ticks
 
     // Declare OpMode members for each of the 4 motors.
@@ -120,12 +120,12 @@ public class AutonomousTest extends LinearOpMode {
     }
 
     public void initialDunk() throws InterruptedException {
-        RobotPosition anchorPos1 = new RobotPosition(830, 1600, 3.96228139852);
-        RobotPosition dunkPos1 = new RobotPosition(1028.4349 - 50 + 10, 1561.746 + 20 + 10, 3.8671723 + 0.02);
+        RobotPosition anchorPos1 = new RobotPosition(820, 1600, 3.96228139852);
+        RobotPosition dunkPos1 = new RobotPosition(1028.4349 - 50 + 10, 1561.746 + 20 + 10 + 10, 3.8671723 + 0.02);
 
         int currentTraversalStage = 0;
         RobotPosition[] traversalPath = {anchorPos1, dunkPos1};
-        driveBase.overrideTolerance(30, 0.5);
+        driveBase.overrideTolerance(50, 0.5);
         driveBase.setTarget(traversalPath[currentTraversalStage], runtime.seconds());
         lift.setTargetHeight(dunkHeight, runtime.seconds());
         arm.prepareDunk();
