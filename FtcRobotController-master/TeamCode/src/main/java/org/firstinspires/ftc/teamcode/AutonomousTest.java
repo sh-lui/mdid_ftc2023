@@ -61,7 +61,7 @@ public class AutonomousTest extends LinearOpMode {
     }
 
     public void intermediateDunk() throws InterruptedException {
-        RobotPosition anchorPos1 = new RobotPosition(900, 1400, 3.96228139852);
+        RobotPosition anchorPos1 = new RobotPosition(900, 1400, Math.PI);
         RobotPosition dunkPos1 = new RobotPosition(1028.4349 - 50 + 10, 1561.746 + 20 + 10 + 10, 3.8671723 + 0.02);
 
         int currentTraversalStage = 0;
@@ -121,7 +121,7 @@ public class AutonomousTest extends LinearOpMode {
     }
     public void lowerAndGrab(int coneNumber) throws InterruptedException {
         // cone number: (int) from 5 ... 1.
-        RobotPosition anchorPos = new RobotPosition(900, 1420, 3.96228139852);
+        RobotPosition anchorPos = new RobotPosition(900, 1400, Math.PI);
         RobotPosition grabPos = new RobotPosition(195, 1400, Math.PI);
         int currentTraversalStage = 0;
         RobotPosition[] traversalPath = {anchorPos, grabPos};
@@ -145,8 +145,8 @@ public class AutonomousTest extends LinearOpMode {
                     driveBase.overrideTolerance(30, 0.1);
                     driveBase.overrideTranslationalPID(0.06, 0, 0.002);
                     driveBase.overrideAngularPID(0.5, 0, 0.05);
-                    driveBase.overrideTranslationalCap(0.4);
-                    driveBase.overrideAngularCap(0.4);
+                    driveBase.overrideTranslationalCap(0.5);
+                    driveBase.overrideAngularCap(0.5);
                 }
 
                 // set the new target
