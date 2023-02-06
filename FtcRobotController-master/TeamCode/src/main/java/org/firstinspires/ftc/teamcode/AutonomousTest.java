@@ -22,7 +22,8 @@ import org.firstinspires.ftc.teamcode.utils.RobotPosition;
 @Autonomous(name="Autonomous Text.")
 public class AutonomousTest extends LinearOpMode {
 
-    private double dunkHeight = 4000;
+    private double dunkHeight = 4000; // in motor encoder ticks
+    private double stackedConeOffsetHeight = 179.41117; // in motor encoder ticks
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -58,9 +59,61 @@ public class AutonomousTest extends LinearOpMode {
             driveBase.run(runtime.seconds());
         }
     }
-    public void lowerAndGrab() throws InterruptedException {
+    public void lowerAndGrab(int coneNumber) throws InterruptedException {
+        // cone number: (int) from 5 ... 1.
         RobotPosition anchorPos = new RobotPosition(900, 1420, 3.96228139852);
         RobotPosition grabPos = new RobotPosition(180, 1460, Math.PI);
+        int currentTraversalStage = 0;
+        RobotPosition[] traversalPath = {anchorPos, grabPos};
+        driveBase.overrideTolerance(50, 0.5);
+        driveBase.setTarget(traversalPath[currentTraversalStage], runtime.seconds());
+        lift.setTargetHeight((coneNumber-1) * stackedConeOffsetHeight, runtime.seconds());
+        arm.prepareGrab();
+        claw.open();
+        while (opModeIsActive() && (!lift.targetReached() || !(driveBase.targetReached() && currentTraversalStage == traversalPath.length - 1) )) {
+            driveBase.run(runtime.seconds());
+            lift.run(runtime.seconds());
+            if (driveBase.targetReached() &&  currentTraversalStage < traversalPath.length - 1) {
+                currentTraversalStage += 1;
+
+                // additional operations for entering new stage.
+                if (currentTraversalStage == 1) {
+                    driveBase.overrideTolerance(10, 0.0001);
+                    driveBase.overrideTranslationalPID(0.06, 0, 0.002);
+                    driveBase.overrideAngularPID(0.5, 0, 0.05);
+
+                }
+
+                // set the new target
+                driveBase.setTarget(traversalPath[currentTraversalStage], runtime.seconds());
+            }
+
+            telemetry.addData("Status", "x: " + driveBase.odometryEngine.getCurrentPosition().X);
+            telemetry.addData("Status", "y: " + driveBase.odometryEngine.getCurrentPosition().Y);
+            telemetry.addData("Status", "theta: " + driveBase.odometryEngine.getCurrentPosition().Theta);
+            telemetry.addData("Status", "lift target reached: " + lift.targetReached());
+            telemetry.addData("Status", "drive target reached: " + driveBase.targetReached());
+            telemetry.addData("Status", "drive target reached: " + driveBase.targetReached());
+            telemetry.addData("Status", "dp:" + driveBase.translationalPIDController.Kp);
+            telemetry.addData("Status", "dd:" + driveBase.translationalPIDController.Kd);
+            telemetry.addData("Status", "adp:" + driveBase.angularPIDController.Kp);
+            telemetry.addData("Status", "add:" + driveBase.angularPIDController.Kd);
+            telemetry.addData("Status", "current P:" + driveBase.translationalPIDController.currentP);
+            telemetry.addData("Status", "current D:" + driveBase.translationalPIDController.currentD);
+            telemetry.addData("Status", "current angular P:" + driveBase.angularPIDController.currentP);
+            telemetry.addData("Status", "current angular D:" + driveBase.angularPIDController.currentD);
+            telemetry.addData("Status", "current angular power:" + driveBase.currentAngularPower);
+            telemetry.update();
+        }
+
+        driveBase.stopAll();
+        arm.grab();
+        Thread.sleep(400);
+        claw.close();
+        Thread.sleep(200);
+
+
+
 
     }
 
@@ -84,7 +137,7 @@ public class AutonomousTest extends LinearOpMode {
                 // additional operations for entering new stage.
                 if (currentTraversalStage == 1) {
                     driveBase.overrideTolerance(10, 0.0001);
-                    driveBase.overrideTranslationalPID(0.06, 0, 0.002);
+                    driveBase.overrideTranslationalPID(0.006, 0, 0.002);
                     driveBase.overrideAngularPID(0.5, 0, 0.05);
 
                 }
@@ -115,7 +168,7 @@ public class AutonomousTest extends LinearOpMode {
         arm.dunk();
         Thread.sleep(400);
         claw.open();
-        Thread.sleep(500);
+        Thread.sleep(200);
     }
 
 
