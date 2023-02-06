@@ -145,8 +145,8 @@ public class AutonomousTest extends LinearOpMode {
                     driveBase.overrideTolerance(30, 0.1);
                     driveBase.overrideTranslationalPID(0.06, 0, 0.002);
                     driveBase.overrideAngularPID(0.5, 0, 0.05);
-                    driveBase.overrideTranslationalCap(0.6);
-                    driveBase.overrideAngularCap(0.6);
+                    driveBase.overrideTranslationalCap(0.4);
+                    driveBase.overrideAngularCap(0.4);
                 }
 
                 // set the new target
