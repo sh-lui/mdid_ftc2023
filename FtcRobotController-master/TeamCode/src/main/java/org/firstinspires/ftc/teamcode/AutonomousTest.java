@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.utils.RobotPosition;
 @Autonomous(name="Autonomous Text.")
 public class AutonomousTest extends LinearOpMode {
 
-    private double dunkHeight = 4000 - 170; // in motor encoder ticks
+    private double dunkHeight = 4000 - 85; // in motor encoder ticks
     private double stackedConeOffsetHeight = 179.41117; // in motor encoder ticks
 
     // Declare OpMode members for each of the 4 motors.
