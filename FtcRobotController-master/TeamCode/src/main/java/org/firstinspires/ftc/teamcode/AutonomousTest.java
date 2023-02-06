@@ -145,7 +145,7 @@ public class AutonomousTest extends LinearOpMode {
 
                 // additional operations for entering new stage.
                 if (currentTraversalStage == 1) {
-                    driveBase.overrideTolerance(30, 0.1);
+                    driveBase.overrideTolerance(35, 0.2);
                     driveBase.overrideTranslationalPID(0.04, 0, 0.002);
                     driveBase.overrideAngularPID(0.5, 0, 0.05);
                     driveBase.overrideTranslationalCap(0.35);
