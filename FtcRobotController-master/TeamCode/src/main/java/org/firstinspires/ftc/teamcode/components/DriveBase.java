@@ -35,6 +35,9 @@ public class DriveBase extends BaseComponent {
     private double angularPID_Kd = 0.05;
     private double angularPID_IErrorThres = 200;
 
+    public double angularPowerCap = 1;
+    public double translationalPowerCap = 1;
+
 
     public DcMotor leftFrontMotor = null;
     public DcMotor leftRearMotor = null;
@@ -119,10 +122,12 @@ public class DriveBase extends BaseComponent {
             //double theta, power, turn;
             autoTheta = _getTargetAngle(odometryEngine.getCurrentPosition(), targetPosition) + Math.PI/2;
             autoPower = _scaledShiftedSigmoid(translationalPIDController.getNextVal(-1 * _getCartesianDistance(odometryEngine.getCurrentPosition(), targetPosition), runtime), 0.9, true);
+            autoPower = Math.min(translationalPowerCap, autoPower);
             currentPower = autoPower;
 
             angularOffset = _getAngularOffset(odometryEngine.getCurrentPosition(), targetPosition);
             autoTurn = _scaledShiftedSigmoid(angularPIDController.getNextVal(-1 * angularOffset, runtime), 0.9, true);
+            autoTurn = Math.max(Math.min(autoTurn, angularPowerCap), -angularPowerCap);
             currentAngularPower = autoTurn;
 
             _setAngularPower(autoTheta, autoPower, -autoTurn);
@@ -133,6 +138,13 @@ public class DriveBase extends BaseComponent {
         }
     }
 
+    public void overrideAngularCap(double cap) {
+        angularPowerCap = cap;
+    }
+
+    public void overrideTranslationalCap(double cap) {
+        translationalPowerCap = cap;
+    }
     public void overrideTolerance( double translationalTolerance, double angularTolerance) {
         translationalOffsetTolerance = translationalTolerance;
         angularOffsetTolerance = angularTolerance;
