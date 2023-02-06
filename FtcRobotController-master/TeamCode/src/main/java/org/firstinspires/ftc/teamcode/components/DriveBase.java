@@ -51,11 +51,15 @@ public class DriveBase extends BaseComponent {
     public PIDController angularPIDController = null;
     public PIDController translationalPIDController = null;
 
+    // for debug
     public double autoTurn;
     public double autoTheta;
     public double autoPower;
 
     public double angularOffset;
+    public boolean angleReached;
+    public boolean positionReached;
+
 
     public DriveBase(DcMotor _leftFrontMotor, DcMotor _leftRearMotor, DcMotor _rightFrontMotor,  DcMotor _rightRearMotor, DcMotor _encoder1, DcMotor _encoder2, DcMotor _encoder3) {
         leftFrontMotor = _leftFrontMotor;
@@ -148,7 +152,9 @@ public class DriveBase extends BaseComponent {
     }
     public boolean targetReached() {
         if (targetPosition != null) {
-            return _getAngularOffset(odometryEngine.getCurrentPosition(), targetPosition) < angularOffsetTolerance && _getCartesianDistance(odometryEngine.getCurrentPosition(), targetPosition) < translationalOffsetTolerance;
+            angleReached = _getAngularOffset(odometryEngine.getCurrentPosition(), targetPosition) < angularOffsetTolerance ;
+            positionReached = _getCartesianDistance(odometryEngine.getCurrentPosition(), targetPosition) < translationalOffsetTolerance;
+            return  angleReached && positionReached;
         } else {
             return true;
         }

@@ -119,7 +119,7 @@ public class AutonomousTest extends LinearOpMode {
 
     public void initialDunk() throws InterruptedException {
         RobotPosition anchorPos1 = new RobotPosition(900, 1520, 3.96228139852);
-        RobotPosition dunkPos1 = new RobotPosition(1025.4349, 1568.746, 3.83);
+        RobotPosition dunkPos1 = new RobotPosition(1028.4349, 1561.746, 3.8671723 + 0.02);
 
         int currentTraversalStage = 0;
         RobotPosition[] traversalPath = {anchorPos1, dunkPos1};
@@ -136,9 +136,9 @@ public class AutonomousTest extends LinearOpMode {
 
                 // additional operations for entering new stage.
                 if (currentTraversalStage == 1) {
-                    driveBase.overrideTolerance(30, 0.08);
-                    driveBase.overrideTranslationalPID(0.02, 0, 0.002);
-                    driveBase.overrideAngularPID(0.5, 0, 0.05);
+                    driveBase.overrideTolerance(30, 0.1);
+                    driveBase.overrideTranslationalPID(0.015, 0, 0.002);
+                    driveBase.overrideAngularPID(0.7, 0, 0.05);
 
                 }
 
@@ -150,7 +150,8 @@ public class AutonomousTest extends LinearOpMode {
             telemetry.addData("Status", "theta: " + driveBase.odometryEngine.getCurrentPosition().Theta);
             telemetry.addData("Status", "lift target reached: " + lift.targetReached());
             telemetry.addData("Status", "drive target reached: " + driveBase.targetReached());
-            telemetry.addData("Status", "drive target reached: " + driveBase.targetReached());
+            telemetry.addData("Status", "drive angle reached: " + driveBase.angleReached);
+            telemetry.addData("Status", "drive position reached: " + driveBase.positionReached);
             telemetry.addData("Status", "dp:" + driveBase.translationalPIDController.Kp);
             telemetry.addData("Status", "dd:" + driveBase.translationalPIDController.Kd);
             telemetry.addData("Status", "adp:" + driveBase.angularPIDController.Kp);
