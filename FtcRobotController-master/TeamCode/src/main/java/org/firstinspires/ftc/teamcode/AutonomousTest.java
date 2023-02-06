@@ -120,7 +120,7 @@ public class AutonomousTest extends LinearOpMode {
     }
 
     public void initialDunk() throws InterruptedException {
-        RobotPosition anchorPos1 = new RobotPosition(900, 1520, 3.96228139852);
+        RobotPosition anchorPos1 = new RobotPosition(900, 1560, 3.96228139852);
         RobotPosition dunkPos1 = new RobotPosition(1028.4349, 1561.746, 3.8671723 + 0.02);
 
         int currentTraversalStage = 0;
@@ -138,7 +138,7 @@ public class AutonomousTest extends LinearOpMode {
 
                 // additional operations for entering new stage.
                 if (currentTraversalStage == 1) {
-                    driveBase.overrideTolerance(10, 0.07);
+                    driveBase.overrideTolerance(7, 0.07);
                     driveBase.overrideTranslationalPID(0.019, 0, 0.002);
                     driveBase.overrideAngularPID(1.4, 0, 0.05);
                     driveBase.overrideTranslationalCap(0.4);
