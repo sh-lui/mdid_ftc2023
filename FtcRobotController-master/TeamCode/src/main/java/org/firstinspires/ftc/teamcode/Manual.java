@@ -179,6 +179,9 @@ public class Manual extends LinearOpMode {
             telemetry.addData("Status", "left D: " + lift.leftPIDController.currentD);
             telemetry.addData("Status", "left I: " + lift.leftPIDController);
             telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Status", "x: " + driveBase.odometryEngine.getCurrentPosition().X);
+            telemetry.addData("Status", "y: " + driveBase.odometryEngine.getCurrentPosition().Y);
+            telemetry.addData("Status", "theta: " + driveBase.odometryEngine.getCurrentPosition().Theta);
             telemetry.update();
         }
     }

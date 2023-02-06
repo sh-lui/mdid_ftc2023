@@ -4,23 +4,26 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.utils.RobotPosition;
 import org.firstinspires.ftc.teamcode.utils.OdometryEngine;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.utils.PIDController;
 import org.firstinspires.ftc.teamcode.utils.RobotWheelPower;
 
 public class DriveBase extends BaseComponent {
 
-    public double robotStartX = 0;
-    public double robotStartY = 0;
-    public double robotStartTheta = 0;
+    public double currentPower;
+    public double currentAngularPower;
+    public double robotStartX = 640 + 190; // mm
+    public double robotStartY = 336/2; // mm
+    public double robotStartTheta = Math.PI/2; //
 
     public double encoderRadius = 19;
     public double encoderTicksPerRevolution = 8192;
-    public double encoderVerticalSpan = 340;
+    public double encoderVerticalSpan = 341;
     public double encoderHorizontalSpan = 48.53;
 
-    public double angularOffsetTolerance = 0.00001;
-    public double translationalOffsetTolerance = 0.000001;
+    public double angularOffsetTolerance = 0.01;
+    public double translationalOffsetTolerance = 10;
 
     private double translationalPID_Kp = 0.04;
     private double translationalPID_Ki = 0;
@@ -104,40 +107,52 @@ public class DriveBase extends BaseComponent {
     }
 
 
-    public void syncRunToPosition(RobotPosition targetPosition, double runtime) {
-        double startTime, currentTime;
-
-        RobotPosition robotTarget = new RobotPosition(0, 1000, Math.PI);
-        startTime = System.currentTimeMillis() / 1000L; // get the unix time
-        this.setTarget(robotTarget, runtime);
-        while (targetPosition != null) {
-            currentTime = System.currentTimeMillis() / 1000L;
-            this.run(runtime + (currentTime - startTime));
-        }
-
-    }
 
     public void run(double runtime) {
         try { odometryEngine.updatePosition(encoder1.getCurrentPosition(), encoder2.getCurrentPosition(), encoder3.getCurrentPosition()); } catch (Exception ignore) { }
 
-        if (targetPosition != null) {
+        if (targetPosition != null && !targetReached()) {
             //double theta, power, turn;
             autoTheta = _getTargetAngle(odometryEngine.getCurrentPosition(), targetPosition) + Math.PI/2;
-            autoPower = _scaledShiftedSigmoid(translationalPIDController.getNextVal(-1 * _getCartesianDistance(odometryEngine.getCurrentPosition(), targetPosition), runtime), 0.9);
+            autoPower = _scaledShiftedSigmoid(translationalPIDController.getNextVal(-1 * _getCartesianDistance(odometryEngine.getCurrentPosition(), targetPosition), runtime), 0.9, true);
+            currentPower = autoPower;
 
             angularOffset = _getAngularOffset(odometryEngine.getCurrentPosition(), targetPosition);
-            autoTurn = _scaledShiftedSigmoid(angularPIDController.getNextVal(-1 * angularOffset, runtime), 0.9);
+            autoTurn = _scaledShiftedSigmoid(angularPIDController.getNextVal(-1 * angularOffset, runtime), 0.9, true);
+            currentAngularPower = autoTurn;
 
             _setAngularPower(autoTheta, autoPower, -autoTurn);
 
-            if (targetReached()) {
-                dropTarget();
-            }
+            //if (targetReached()) {
+            //    dropTarget();
+            //}
         }
     }
 
+    public void overrideTolerance( double translationalTolerance, double angularTolerance) {
+        translationalOffsetTolerance = translationalTolerance;
+        angularOffsetTolerance = angularTolerance;
+    }
+
+    public void overrideAngularPID(double P, double I, double D) {
+        angularPID_Kp = P;
+        angularPID_Ki = I;
+        angularPID_Kd = D;
+        angularPIDController.overridePID(P, I, D);
+    }
+    public void overrideTranslationalPID(double P, double I, double D) {
+        translationalPID_Kp = P;
+        translationalPID_Ki = I;
+        translationalPID_Kd = D;
+        translationalPIDController.overridePID(P, I, D);
+    }
     public boolean targetReached() {
-        return _getAngularOffset(odometryEngine.getCurrentPosition(), targetPosition) < angularOffsetTolerance && _getCartesianDistance(odometryEngine.getCurrentPosition(), targetPosition) < translationalOffsetTolerance;
+        if (targetPosition != null) {
+            return _getAngularOffset(odometryEngine.getCurrentPosition(), targetPosition) < angularOffsetTolerance && _getCartesianDistance(odometryEngine.getCurrentPosition(), targetPosition) < translationalOffsetTolerance;
+        } else {
+            return true;
+        }
+
     }
 
     public void dropTarget() {
@@ -153,6 +168,14 @@ public class DriveBase extends BaseComponent {
         dropTarget();
         _setAngularPower(theta, power, turn);
     }
+
+    public void stopAll() {
+        leftFrontMotor.setPower(0);
+        rightFrontMotor.setPower(0);
+        leftRearMotor.setPower(0);
+        rightRearMotor.setPower(0);
+    }
+
 
     private double _setHardLimit(double value, double min, double max) {
         return Math.min(Math.max(value, min), max);
@@ -191,8 +214,8 @@ public class DriveBase extends BaseComponent {
         return 1 / (1 + Math.pow(Math.E, -x)) - 0.5;
     }
 
-    private double _scaledShiftedSigmoid(double x, double factor) {
-        return factor * _shiftedSigmoid(x);
+    private double _scaledShiftedSigmoid(double x, double factor, boolean linearlize) {
+        return  linearlize ? factor * _shiftedSigmoid(x) * 4 : factor * _shiftedSigmoid(x);
 
     }
 

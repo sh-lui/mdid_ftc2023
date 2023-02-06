@@ -6,6 +6,8 @@ import org.firstinspires.ftc.teamcode.utils.ModeSwitcher;
 import org.firstinspires.ftc.teamcode.utils.PIDController;
 
 public class CascadeLift extends BaseComponent{
+
+    private double heightErrorTolerance = 50;
     private double leftInitialPosition = 0;
     private double rightInitialPosition = 0;
     private double max_power = 1;
@@ -18,6 +20,7 @@ public class CascadeLift extends BaseComponent{
     private double basePower = 0.1;
 
     // variables set public for debugging purposes
+    public double currentTargetHeight = 0;
     public ModeSwitcher heightModeSwitcher = new ModeSwitcher(new double[]{0, 1000, 2620, 4000}, 0);
     public DcMotor leftMotor = null;
     public DcMotor rightMotor = null;
@@ -59,6 +62,8 @@ public class CascadeLift extends BaseComponent{
 
     public void setTargetHeight(double value, double time) {
 
+
+        currentTargetHeight = value;
         leftPIDController.reset(value, getLeftPosition(), time);
         rightPIDController.reset(value, getRightPosition(), time);
     }
@@ -71,6 +76,9 @@ public class CascadeLift extends BaseComponent{
     public void decrementHeightMode(double time) {
         heightModeSwitcher.decrement();
         setTargetHeight(heightModeSwitcher.getValue(), time);
+    }
+    public boolean targetReached() {
+        return Math.abs(getPosition() - currentTargetHeight) <  heightErrorTolerance;
     }
 
     public void run(double time) {

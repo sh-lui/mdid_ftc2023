@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.utils;
 
+import org.checkerframework.checker.units.qual.K;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -7,9 +9,9 @@ import java.util.Collections;
 
 public class PIDController {
     // Hyper params
-    private double Kp;
-    private double Ki;
-    private double Kd;
+    public double Kp;
+    public double Ki;
+    public double Kd;
     private double IErrorThres;
 
     public double currentP;
@@ -35,6 +37,13 @@ public class PIDController {
         previousError = (double) (_currentPosition - _targetPosition);
         previousRuntime = runtime;
     }
+
+    public void overridePID(double P, double I, double D) {
+        Kp = P;
+        Ki = I;
+        Kd = D;
+    }
+
 
 
     public double getNextVal(double currentPosition, double runtime) {

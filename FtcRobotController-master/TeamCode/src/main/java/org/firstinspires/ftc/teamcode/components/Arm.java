@@ -8,7 +8,8 @@ public class Arm extends BaseComponent {
     public Servo rightServo;
 
     private double MIN_POSITION = 0.02;
-    private double MAX_POSITION = 0.65;
+    private double MAX_POSITION = 0.70;
+    private double prepareDunkPos = 0.45;
 
     private double currentPosition = 0;
     private double armRaiseRate = -0.07;
@@ -26,6 +27,16 @@ public class Arm extends BaseComponent {
 
     public void incrementPosition( double triggerValue) {
         currentPosition = Math.max(MIN_POSITION, Math.min( currentPosition + triggerValue * armRaiseRate, MAX_POSITION));
+    }
+
+    public void dunk() {
+        leftServo.setPosition(MAX_POSITION);
+        rightServo.setPosition(1+coupling_offset - MAX_POSITION);
+    }
+
+    public void prepareDunk() {
+        leftServo.setPosition(prepareDunkPos);
+        rightServo.setPosition(1+coupling_offset - prepareDunkPos);
     }
 
     public double getCurrentPosition() {
