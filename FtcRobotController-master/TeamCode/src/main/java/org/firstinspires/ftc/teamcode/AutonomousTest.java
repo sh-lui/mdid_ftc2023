@@ -62,7 +62,7 @@ public class AutonomousTest extends LinearOpMode {
     public void lowerAndGrab(int coneNumber) throws InterruptedException {
         // cone number: (int) from 5 ... 1.
         RobotPosition anchorPos = new RobotPosition(900, 1420, 3.96228139852);
-        RobotPosition grabPos = new RobotPosition(180, 1400, Math.PI);
+        RobotPosition grabPos = new RobotPosition(195, 1370, Math.PI);
         int currentTraversalStage = 0;
         RobotPosition[] traversalPath = {anchorPos, grabPos};
         driveBase.overrideTolerance(50, 0.5);
@@ -82,12 +82,11 @@ public class AutonomousTest extends LinearOpMode {
 
                 // additional operations for entering new stage.
                 if (currentTraversalStage == 1) {
-                    driveBase.overrideTolerance(20, 0.0001);
+                    driveBase.overrideTolerance(30, 0.1);
                     driveBase.overrideTranslationalPID(0.06, 0, 0.002);
                     driveBase.overrideAngularPID(0.5, 0, 0.05);
                     driveBase.overrideTranslationalCap(0.4);
                     driveBase.overrideAngularCap(0.4);
-
                 }
 
                 // set the new target
