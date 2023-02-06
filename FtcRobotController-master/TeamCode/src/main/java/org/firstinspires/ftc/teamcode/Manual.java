@@ -22,6 +22,7 @@ public class Manual extends LinearOpMode {
     private boolean decrementedLiftHeight = false;
     private boolean hasToggledClawMode = false;
 
+    private double universalSpeedReductionFactor = 0.8;
     private ElapsedTime runtime = new ElapsedTime();
 
     private DcMotor leftLift = null;
@@ -141,7 +142,7 @@ public class Manual extends LinearOpMode {
             }
 
             // control the wheels:
-            driveBase.manualSetAngularPower(drive_theta, showLowerDriveSpeed ? 0.2 * drive_power : drive_power, showLowerDriveSpeed ? 0.2 * drive_turn : drive_turn);
+            driveBase.manualSetAngularPower(drive_theta, showLowerDriveSpeed ? 0.4 * drive_power * universalSpeedReductionFactor : drive_power * universalSpeedReductionFactor, showLowerDriveSpeed ? 0.4 * drive_turn * universalSpeedReductionFactor : drive_turn * universalSpeedReductionFactor);
 
             // control the arm:
             arm.incrementPosition(armIncrementValue);
