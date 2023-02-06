@@ -240,7 +240,11 @@ public class AutonomousTest extends LinearOpMode {
 
         if (opModeIsActive()) {
             initialDunk();
-            lowerAndGrab(5);
+            for (int i = 5; i > 0; i--) {
+                lowerAndGrab(i);
+                initialDunk();
+            }
+
         }
     }
 }
