@@ -187,7 +187,7 @@ public class AutonomousTest extends LinearOpMode {
     }
 
     public void initialDunk() throws InterruptedException {
-        RobotPosition anchorPos1 = new RobotPosition(800, 1500, 3.96228139852);
+        RobotPosition anchorPos1 = new RobotPosition(800, 1500, Math.PI/2);// 3.96228139852
         RobotPosition dunkPos1 = new RobotPosition(954, 1653, 3.587);
 
         int currentTraversalStage = 0;
