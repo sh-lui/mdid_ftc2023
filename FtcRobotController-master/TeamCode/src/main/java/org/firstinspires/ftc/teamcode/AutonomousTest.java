@@ -194,7 +194,7 @@ public class AutonomousTest extends LinearOpMode {
         RobotPosition[] traversalPath = {anchorPos1, dunkPos1};
         driveBase.overrideTolerance(50, 0.5);
         driveBase.setTarget(traversalPath[currentTraversalStage], runtime.seconds());
-        driveBase.overrideTranslationalPID(0.04, 0, 0.005);
+        driveBase.overrideTranslationalPID(1000, 0, 0.005);
         driveBase.overrideAngularPID(1.0, 0, 0.05);
 
         lift.setTargetHeight(dunkHeight, runtime.seconds());
