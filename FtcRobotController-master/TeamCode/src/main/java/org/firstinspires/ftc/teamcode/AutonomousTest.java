@@ -123,14 +123,14 @@ public class AutonomousTest extends LinearOpMode {
     public void lowerAndGrab(int coneNumber) throws InterruptedException {
         // cone number: (int) from 5 ... 1.
         RobotPosition anchorPos = new RobotPosition(900, 1400, Math.PI);
-        RobotPosition grabPos = new RobotPosition(200, 1500, Math.PI);
+        RobotPosition grabPos = new RobotPosition(220, 1500, Math.PI);
         int currentTraversalStage = 0;
         RobotPosition[] traversalPath = {anchorPos, grabPos};
         driveBase.overrideTolerance(35, 0.5);
         driveBase.overrideTranslationalPID(0.019, 0, 0.002);
         driveBase.overrideAngularPID(1.4, 0, 0.05);
-        driveBase.overrideTranslationalCap(0.7);
-        driveBase.overrideAngularCap(0.7);
+        driveBase.overrideTranslationalCap(0.65);
+        driveBase.overrideAngularCap(0.65);
         driveBase.setTarget(traversalPath[currentTraversalStage], runtime.seconds());
         lift.setTargetHeight((coneNumber-1) * stackedConeOffsetHeight, runtime.seconds());
         claw.open();
@@ -148,8 +148,8 @@ public class AutonomousTest extends LinearOpMode {
                     driveBase.overrideTolerance(35, 0.2);
                     driveBase.overrideTranslationalPID(0.04, 0, 0.002);
                     driveBase.overrideAngularPID(0.5, 0, 0.05);
-                    driveBase.overrideTranslationalCap(0.5);
-                    driveBase.overrideAngularCap(0.5);
+                    driveBase.overrideTranslationalCap(0.4);
+                    driveBase.overrideAngularCap(0.4);
                 }
 
                 // set the new target
