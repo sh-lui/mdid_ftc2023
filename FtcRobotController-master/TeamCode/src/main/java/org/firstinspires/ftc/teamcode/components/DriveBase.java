@@ -19,8 +19,8 @@ public class DriveBase extends BaseComponent {
 
     public double encoderRadius = 19;
     public double encoderTicksPerRevolution = 8192;
-    public double encoderVerticalSpan = 341;
-    public double encoderHorizontalSpan = 48.53;
+    public double encoderVerticalSpan = 342;
+    public double encoderHorizontalSpan = 48.53 - 5; //48.53
 
     public double angularOffsetTolerance = 0.01;
     public double translationalOffsetTolerance = 10;

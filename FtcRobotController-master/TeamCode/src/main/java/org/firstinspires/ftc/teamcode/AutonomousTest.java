@@ -22,8 +22,8 @@ import org.firstinspires.ftc.teamcode.utils.RobotPosition;
 @Autonomous(name="Autonomous Text.")
 public class AutonomousTest extends LinearOpMode {
 
-    private double dunkHeight = 4000;// - 85 + 45; // in motor encoder ticks
-    private double stackedConeOffsetHeight = 179.41117; // in motor encoder ticks
+    private double dunkHeight = 2775;// - 85 + 45; // in motor encoder ticks
+    private double stackedConeOffsetHeight = 120.49; // in motor encoder ticks
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -61,14 +61,14 @@ public class AutonomousTest extends LinearOpMode {
     }
 
     public void intermediateDunk() throws InterruptedException {
-        RobotPosition anchorPos1 = new RobotPosition(900, 1400, Math.PI);
-        RobotPosition dunkPos1 = new RobotPosition(954, 1653, 3.587);
+        RobotPosition anchorPos1 = new RobotPosition(900, 1400, 0);
+        RobotPosition dunkPos1 = new RobotPosition(1088, 1669, 0.8404);//3.587
 
         int currentTraversalStage = 0;
         RobotPosition[] traversalPath = {anchorPos1, dunkPos1};
         driveBase.overrideTolerance(30, 0.5);
         driveBase.setTarget(traversalPath[currentTraversalStage], runtime.seconds());
-        driveBase.overrideTranslationalPID(0.04, 0, 0.005);
+        driveBase.overrideTranslationalPID(0.00020, 0, 0.005);
         driveBase.overrideAngularPID(1.5, 0, 0.05);
 
         lift.setTargetHeight(dunkHeight, runtime.seconds());
@@ -122,13 +122,13 @@ public class AutonomousTest extends LinearOpMode {
     }
     public void lowerAndGrab(int coneNumber) throws InterruptedException {
         // cone number: (int) from 5 ... 1.
-        RobotPosition anchorPos = new RobotPosition(900, 1400, Math.PI);
-        RobotPosition grabPos = new RobotPosition(220, 1500, Math.PI);
+        RobotPosition anchorPos = new RobotPosition(900, 1400, 0);
+        RobotPosition grabPos = new RobotPosition(310, 1466, 0);
         int currentTraversalStage = 0;
         RobotPosition[] traversalPath = {anchorPos, grabPos};
-        driveBase.overrideTolerance(35, 0.5);
-        driveBase.overrideTranslationalPID(0.003, 0, 0.002);
-        driveBase.overrideAngularPID(1.4, 0, 0.05);
+        driveBase.overrideTolerance(5, 0.5);
+        driveBase.overrideTranslationalPID(0.015, 0, 0.002);
+        driveBase.overrideAngularPID(1.0, 0, 0.05);
         driveBase.overrideTranslationalCap(0.8);
         driveBase.overrideAngularCap(0.8);
         driveBase.setTarget(traversalPath[currentTraversalStage], runtime.seconds());
@@ -145,11 +145,11 @@ public class AutonomousTest extends LinearOpMode {
 
                 // additional operations for entering new stage.
                 if (currentTraversalStage == 1) {
-                    driveBase.overrideTolerance(35, 0.2);
-                    driveBase.overrideTranslationalPID(0.004, 0, 0.002);
+                    driveBase.overrideTolerance(20, 0.2);
+                    driveBase.overrideTranslationalPID(0.018, 0, 0.002);
                     driveBase.overrideAngularPID(0.5, 0, 0.05);
-                    driveBase.overrideTranslationalCap(0.8);
-                    driveBase.overrideAngularCap(0.8);
+                    driveBase.overrideTranslationalCap(0.6);
+                    driveBase.overrideAngularCap(0.6);
                 }
 
                 // set the new target
@@ -187,14 +187,14 @@ public class AutonomousTest extends LinearOpMode {
     }
 
     public void initialDunk() throws InterruptedException {
-        RobotPosition anchorPos1 = new RobotPosition(830, 1500, Math.PI/2);// 3.96228139852
-        RobotPosition dunkPos1 = new RobotPosition(954, 1653, 3.587);
+        RobotPosition anchorPos1 = new RobotPosition(962, 1338, Math.PI/2);
+        RobotPosition dunkPos1 = new RobotPosition(1146, 1654, 0.8404);//3.587
 
         int currentTraversalStage = 0;
         RobotPosition[] traversalPath = {anchorPos1, dunkPos1};
         driveBase.overrideTolerance(50, 0.5);
         driveBase.setTarget(traversalPath[currentTraversalStage], runtime.seconds());
-        driveBase.overrideTranslationalPID(1000, 0, 0.005);
+        driveBase.overrideTranslationalPID(0.05, 0, 0.005);
         driveBase.overrideAngularPID(1.0, 0, 0.05);
 
         lift.setTargetHeight(dunkHeight, runtime.seconds());
@@ -209,7 +209,7 @@ public class AutonomousTest extends LinearOpMode {
                 // additional operations for entering new stage.
                 if (currentTraversalStage == 1) {
                     driveBase.overrideTolerance(6, 0.07);
-                    driveBase.overrideTranslationalPID(0.019, 0, 0.002);
+                    driveBase.overrideTranslationalPID(0.03, 0, 0.002);
                     driveBase.overrideAngularPID(1.4, 0, 0.05);
                     driveBase.overrideTranslationalCap(0.4);
                     driveBase.overrideAngularCap(0.4);

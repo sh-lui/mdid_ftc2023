@@ -66,7 +66,7 @@ public class OdometryEngine {
         // calculate the changes in the robot-coordinate
         deltaX = (deltaE1 + deltaE2) / 2;
         deltaTheta = (deltaE2 - deltaE1) / encoderVerticalSpan;
-        deltaY = -deltaE3  + encoderHorizontalSpan * deltaTheta;
+        deltaY = -deltaE3  + encoderHorizontalSpan * deltaTheta; //-deltaE3  + encoderHorizontalSpan * deltaTheta;
 
         // adjust the values for the field-coordinate
         currentPosition.incrementValues(

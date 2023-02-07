@@ -9,8 +9,12 @@ public class Arm extends BaseComponent {
 
     private double MIN_POSITION = 0.02;
     private double MAX_POSITION = 0.70;
+
+
+    private double autoGrabPos = 0.80;
+    private double autoDunkPos = 0.1;
     private double prepareDunkPos = 0.50;
-    private double prepareGrabPos = 0.2;
+    private double prepareGrabPos = 0.7;
 
     private double currentPosition = 0;
     private double armRaiseRate = -0.07;
@@ -31,8 +35,8 @@ public class Arm extends BaseComponent {
     }
 
     public void dunk() {
-        leftServo.setPosition(MAX_POSITION);
-        rightServo.setPosition(1+coupling_offset - MAX_POSITION);
+        leftServo.setPosition(autoDunkPos);
+        rightServo.setPosition(1+coupling_offset - autoDunkPos);
     }
 
     public void prepareDunk() {
@@ -40,8 +44,8 @@ public class Arm extends BaseComponent {
         rightServo.setPosition(1+coupling_offset - prepareDunkPos);
     }
     public void grab() {
-        leftServo.setPosition(MIN_POSITION);
-        rightServo.setPosition(1+coupling_offset - MIN_POSITION);
+        leftServo.setPosition(autoGrabPos);
+        rightServo.setPosition(1+coupling_offset - autoGrabPos);
 
     }
     public void prepareGrab() {

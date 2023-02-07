@@ -182,7 +182,7 @@ public class Manual extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Status", "x: " + driveBase.odometryEngine.getCurrentPosition().X);
             telemetry.addData("Status", "y: " + driveBase.odometryEngine.getCurrentPosition().Y);
-            telemetry.addData("Status", "theta: " + driveBase.odometryEngine.getCurrentPosition().Theta);
+            telemetry.addData("Status", "theta: " + driveBase.odometryEngine.getCurrentPosition().Theta * 180 / Math.PI);
             telemetry.update();
         }
     }
