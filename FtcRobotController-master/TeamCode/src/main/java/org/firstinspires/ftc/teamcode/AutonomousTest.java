@@ -127,10 +127,10 @@ public class AutonomousTest extends LinearOpMode {
         int currentTraversalStage = 0;
         RobotPosition[] traversalPath = {anchorPos, grabPos};
         driveBase.overrideTolerance(35, 0.5);
-        driveBase.overrideTranslationalPID(0.019, 0, 0.002);
+        driveBase.overrideTranslationalPID(0.003, 0, 0.002);
         driveBase.overrideAngularPID(1.4, 0, 0.05);
-        driveBase.overrideTranslationalCap(0.65);
-        driveBase.overrideAngularCap(0.65);
+        driveBase.overrideTranslationalCap(0.8);
+        driveBase.overrideAngularCap(0.8);
         driveBase.setTarget(traversalPath[currentTraversalStage], runtime.seconds());
         lift.setTargetHeight((coneNumber-1) * stackedConeOffsetHeight, runtime.seconds());
         claw.open();
@@ -146,10 +146,10 @@ public class AutonomousTest extends LinearOpMode {
                 // additional operations for entering new stage.
                 if (currentTraversalStage == 1) {
                     driveBase.overrideTolerance(35, 0.2);
-                    driveBase.overrideTranslationalPID(0.04, 0, 0.002);
+                    driveBase.overrideTranslationalPID(0.004, 0, 0.002);
                     driveBase.overrideAngularPID(0.5, 0, 0.05);
-                    driveBase.overrideTranslationalCap(0.4);
-                    driveBase.overrideAngularCap(0.4);
+                    driveBase.overrideTranslationalCap(0.8);
+                    driveBase.overrideAngularCap(0.8);
                 }
 
                 // set the new target
