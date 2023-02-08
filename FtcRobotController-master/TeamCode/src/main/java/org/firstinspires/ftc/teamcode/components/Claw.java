@@ -8,8 +8,9 @@ public class Claw extends BaseComponent {
     public Servo leftServo;
     public Servo rightServo;
 
-    public double closePosition = 0.30;
-    public double openPosition = 0.340;
+    public double closePosition = 0.29;
+    public double openPosition = 0.345;
+    public double hyperOpenPosition = 0.40;
 
     public ModeSwitcher servoPositions = new ModeSwitcher(new double[]{closePosition, openPosition}, 1);
 
@@ -29,6 +30,10 @@ public class Claw extends BaseComponent {
     public void open() {
         leftServo.setPosition(openPosition);
         rightServo.setPosition(1-openPosition);
+    }
+    public void hyperOpen() {
+        leftServo.setPosition(hyperOpenPosition);
+        rightServo.setPosition(1-hyperOpenPosition);
     }
     public void close() {
         leftServo.setPosition(closePosition);

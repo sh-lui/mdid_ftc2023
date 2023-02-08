@@ -11,10 +11,10 @@ public class Arm extends BaseComponent {
     private double MAX_POSITION = 0.70;
 
 
-    private double autoGrabPos = 0.80;
-    private double autoDunkPos = 0.1;
+    private double autoGrabPos = 0.0;
+    private double autoDunkPos = 0.7;
     private double prepareDunkPos = 0.50;
-    private double prepareGrabPos = 0.7;
+    private double prepareGrabPos = 0.3;
 
     private double currentPosition = 0;
     private double armRaiseRate = -0.07;
