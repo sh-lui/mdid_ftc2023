@@ -13,7 +13,7 @@ public class DriveBase extends BaseComponent {
 
     public double currentPower;
     public double currentAngularPower;
-    public double robotStartX = 640 + 190; // mm
+    public double robotStartX = 830 + 25; // mm
     public double robotStartY = 336/2; // mm
     public double robotStartTheta = Math.PI/2; //
 
@@ -26,9 +26,9 @@ public class DriveBase extends BaseComponent {
     public double translationalOffsetTolerance = 10;
 
     private double translationalPID_Kp = 0.04;
-    private double translationalPID_Ki = 0;
-    private double translationalPID_Kd = 0.005;
-    private double translationalPID_IErrorThres = 200;
+    private double translationalPID_Ki = 0.01;
+    private double translationalPID_Kd = 0.005; // 0
+    private double translationalPID_IErrorThres = 50; // 200
 
     private double angularPID_Kp = 2;
     private double angularPID_Ki = 0;
@@ -36,7 +36,9 @@ public class DriveBase extends BaseComponent {
     private double angularPID_IErrorThres = 200;
 
     public double angularPowerCap = 1;
+
     public double translationalPowerCap = 1;
+    public boolean isMirror = false;
 
 
     public DcMotor leftFrontMotor = null;
@@ -81,6 +83,13 @@ public class DriveBase extends BaseComponent {
 
         translationalPIDController = new PIDController(translationalPID_Kp, translationalPID_Ki, translationalPID_Kd, translationalPID_IErrorThres);
         angularPIDController = new PIDController(angularPID_Kp, angularPID_Ki, angularPID_Kd, angularPID_IErrorThres);
+    }
+    public void mirrorBasePosition() {
+        this.robotStartX = -this.robotStartX;
+        RobotPosition currentPosition = new RobotPosition(robotStartX, robotStartY, robotStartTheta);
+        odometryEngine.resetCurrentPosition(currentPosition);
+        isMirror = true;
+
     }
 
     private RobotWheelPower getMotorPowerFromAngularPower(double theta, double power, double turn) {
@@ -225,7 +234,8 @@ public class DriveBase extends BaseComponent {
     }
 
     private double _getAngularOffset(RobotPosition pos1, RobotPosition pos2) {
-        return _normalizeAngle(pos2.Theta- pos1.Theta);
+        double a = _normalizeAngle(pos2.Theta- pos1.Theta);
+        return (a + Math.PI) % (2 * Math.PI) - Math.PI;
     }
 
     private double _shiftedSigmoid(double x) {

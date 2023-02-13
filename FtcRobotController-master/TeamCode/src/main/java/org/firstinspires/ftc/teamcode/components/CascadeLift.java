@@ -11,7 +11,7 @@ public class CascadeLift extends BaseComponent{
     private double leftInitialPosition = 0;
     private double rightInitialPosition = 0;
     private double max_power = 1;
-    private double min_power = -1;
+    private double min_power = -0.9;
 
     private double liftPID_Kp = 0.015 - 0.005 + 0.0025;
     private double liftPID_Ki = 0;

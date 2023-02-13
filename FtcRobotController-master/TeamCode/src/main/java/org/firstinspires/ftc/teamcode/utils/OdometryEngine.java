@@ -27,6 +27,10 @@ public class OdometryEngine {
         currentPosition = _currentPosition;
     }
 
+    public void resetCurrentPosition(RobotPosition _currentPosition) {
+        currentPosition = _currentPosition;
+    }
+
     public void configureEncoder(double _encoderRadius, double _encoderTicksPerRevolution, double _encoderVerticalSpan, double _encoderHorizontalSpan) {
         encoderRadius = _encoderRadius;
         encoderTicksPerRevolution = _encoderTicksPerRevolution;

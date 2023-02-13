@@ -22,7 +22,7 @@ public class Manual extends LinearOpMode {
     private boolean decrementedLiftHeight = false;
     private boolean hasToggledClawMode = false;
 
-    private double universalSpeedReductionFactor = 0.8;
+    private double universalSpeedReductionFactor = 0.85   ;
     private ElapsedTime runtime = new ElapsedTime();
 
     private DcMotor leftLift = null;
